@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="code-nXJP22I4Cn">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"91quin.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":"mac","style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="一些杂七杂八的东西">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hacker Self-Development">
+<meta property="og:url" content="https://91quin.github.io/2022/04/18/Hacker%20Self-Development/index.html">
+<meta property="og:site_name" content="人生边上">
+<meta property="og:description" content="一些杂七杂八的东西">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-17T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-12T14:56:08.291Z">
+<meta property="article:author" content="张一剑">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://91quin.github.io/2022/04/18/Hacker%20Self-Development/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Hacker Self-Development | 人生边上</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">人生边上</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://91quin.github.io/2022/04/18/Hacker%20Self-Development/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="张一剑">
+      <meta itemprop="description" content="Just for fun :D">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="人生边上">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hacker Self-Development
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-18 00:00:00" itemprop="dateCreated datePublished" datetime="2022-04-18T00:00:00+08:00">2022-04-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-11-12 22:56:08" itemprop="dateModified" datetime="2022-11-12T22:56:08+08:00">2022-11-12</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>一些杂七杂八的东西</p>
+<span id="more"></span>
+<h1 id="信息来源啊什么的"><a href="#信息来源啊什么的" class="headerlink" title="信息来源啊什么的"></a>信息来源啊什么的</h1><h3 id="Attention-please"><a href="#Attention-please" class="headerlink" title="Attention please"></a>Attention please</h3><blockquote>
+<p>虽然本文大体以时间为序进行，但这一项我特意放在前面</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://owasp.org/www-project-vulnerable-web-applications-directory/"><strong>VWAD</strong><em>Vulnerable Web Applications Directory</em></a></p>
+<blockquote>
+<p><del>我与OWASP心有灵犀</del>（bushi<br>这个是OWASP整理汇总的list，像juice shop我也是从这里知道的。但不仅如此，还包含有一些资料的整理，同时还包括一些list<br>我觉得很行</p>
+</blockquote>
+<p>github上也有诸多仓库，分享了他们的list</p>
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/Hack-with-Github/Awesome-Hacking">Hack-with-Github&#x2F;Awesome-Hacking</a></p>
+<blockquote>
+<p>在我写的时候有58k star，讲真，这是我目前见到的最多的仓库了。同时很可贵的一点是我看到他们一直在更新。</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/qazbnm456/awesome-web-security">awesome-web-security</a></p>
+<blockquote>
+<p>9k star</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/sbilly/awesome-security">awesome-security</a></p>
+<blockquote>
+<p>9k star</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/vitalysim/Awesome-Hacking-Resources">Awesome-Hacking-Resources</a></p>
+<blockquote>
+<p>12k star</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="大会啊大会"><a href="#大会啊大会" class="headerlink" title="大会啊大会"></a>大会啊大会</h3><table>
+<thead>
+<tr>
+<th align="left">业界的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">BlackHat</td>
+</tr>
+<tr>
+<td align="left">CanSecWest</td>
+</tr>
+<tr>
+<td align="left">RECON</td>
+</tr>
+<tr>
+<td align="left">DEFCON</td>
+</tr>
+<tr>
+<td align="left">Qualcomm Security Summit</td>
+</tr>
+<tr>
+<td align="left">HITCON</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>学界的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Oakland</td>
+</tr>
+<tr>
+<td>CCS</td>
+</tr>
+<tr>
+<td>USENIX</td>
+</tr>
+<tr>
+<td>NDSS</td>
+</tr>
+</tbody></table>
+<blockquote>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/31425599">这四个会议是信息安全学术界的顶级会议。和国内一些安全学术界固步自封于密码学、合规之类的不同，国外安全圈还是有很多实干型研究的。ROP, ASLR, ret2dir, Control Flow Guard, 这些引领一时风骚的攻击技术都是在这些学术会议上最先被公布的。</a> </p>
+</blockquote>
+<p>这话真是说到我心坎儿里了</p>
+</blockquote>
+<h3 id="撒学长啊撒学长"><a href="#撒学长啊撒学长" class="headerlink" title="撒学长啊撒学长"></a>撒学长啊撒学长</h3><p>OWASP TOP10</p>
+<h3 id="Blog"><a href="#Blog" class="headerlink" title="Blog"></a>Blog</h3><ol>
+<li><p><a target="_blank" rel="noopener" href="https://sec.today/pulses/">每日安全</a></p>
+<blockquote>
+<p>很棒，腾讯玄武实验室做的每日推送，更新及时，并且很有意思。</p>
+</blockquote>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://github.com/ring04h">ring04h,知乎王音，乌云猪猪侠</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://www.sqlsec.com/2020/10/todo.html">国光的安全随笔记录</a><br>好像是个字节的老哥，找sqli docker image 时找到的。<a target="_blank" rel="noopener" href="https://www.sqlsec.com/2020/05/sqlilabs.html">SQLI labs 靶场精简学习记录</a><br>插一嘴，里边又有句话给我笑拉了 </p>
+<blockquote>
+<p>圈子里面一个有趣的现象：搞二进制的大多数是学霸，搞 Web 的大多都挂科（我的偶像画船听雨甚至还因为挂科被迫留了一级 &#x3D;,&#x3D; ），更加佐证了 Web 安全太杂，学时间长了会让人很浮躁。</p>
+</blockquote>
+</li>
+</ol>
+<p>唉~┑(￣Д ￣)┍<br>搜了搜画船听雨，发现国光和他都是南邮X1cT34m一起打ctf的，又叹了口气是吧XD，撒学长你有没有blog捏<br>4. <a target="_blank" rel="noopener" href="https://github.com/HCTYMFF">疑似画船听雨的仓库</a><br>我又随手翻了翻他的关注，找到个在蚂蚁做安全的老哥<br>5. <a target="_blank" rel="noopener" href="https://github.com/FeeiCN">Feei</a><br>6. 之前在 逼乎(?) 通过回答关注的个老哥<a target="_blank" rel="noopener" href="https://lorexxar.cn/2021/05/19/lifesuibi/">LoRexxar</a><br>杭电毕业进的知道创宇，后来又去的小米。我怎么一看上边提的这俩哥们“国光”和“这个老哥，都是学长给带进的门儿、给的实习。我搁这儿摆烂呢学长，学长呢学长，学长救一下啊！<br>7. <a target="_blank" rel="noopener" href="https://github.com/Audi-1/Awesome-Red-Teaming">Awesome Red Teaming</a><br>写SQLi Labs的老哥(?) Audi-1 我随手一看他的仓库，发现了这个。也没仔细看，感觉挺好，但是确实是有点旧了。<br>8. 举一反三，在GitHub搜red team<br><a target="_blank" rel="noopener" href="https://github.com/search?o=desc&q=red+team&s=stars&type=Repositories">red team</a><br>9. <a target="_blank" rel="noopener" href="https://www.cnblogs.com/piaomiaohongchen/">飘渺红尘</a><br>是因为看到了他写的一篇<a target="_blank" rel="noopener" href="https://www.cnblogs.com/piaomiaohongchen/p/15140742.html">1day漏洞反推技巧</a><br>10. <a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/web/280616.html">挖掘CNVD通用漏洞，轻松拿证书心得</a></p>
+<h3 id="谁会不喜欢看书呢"><a href="#谁会不喜欢看书呢" class="headerlink" title="谁会不喜欢看书呢"></a>谁会不喜欢看书呢</h3><blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/riusksk/secbook">信息安全从业者书单推荐</a></p>
+</blockquote>
+<p>github上我想得有很多这种仓库吧，粗看了一下，还是那几本，不过也有新东西。绷有意思的是无线电安全那里，就那本《无线电安全攻防大揭秘》。我手里的尚且都是二手书，这边是真没多少书吗？</p>
+<blockquote>
+<p>偶然想从微信搜Web Application Hacker’s Handbook看到freebuf的公众号上有这篇文章</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://www.freebuf.com/articles/others-articles/222244.html">如何成为一名漏洞赏金猎人</a><br>这文章是翻译的，<a target="_blank" rel="noopener" href="https://forum.bugcrowd.com/t/researcher-resources-how-to-become-a-bug-bounty-hunter/1102">原文</a>甚至都是16年的了，不过感觉还蛮有用的。</p>
+<blockquote>
+<p>by the way, 我第一次在freebuf用F12，emmmm，介是嘛啊？</p>
+</blockquote>
+<pre><code>                          _.._        ,------------.
+                       ,&#39;      `.    ( We want you! )
+                      /  __) __` \    `-,----------&#39;
+                     (  (`-`(-&#39;)  ) _.-&#39;
+                     /)  \  = /  (
+                    /&#39;    |--&#39; .  \
+                   (  ,---|  `-.)__`
+                    )(  `-.,--&#39;   _`-.
+                   &#39;/,&#39;          (  Uu&quot;,
+                    (_       ,    `/,-&#39; )
+                    `.__,  : `-&#39;/  /`--&#39;
+                      |     `--&#39;  |
+                      `   `-._   /
+                       \        (
+                       /\ .      \.  freebuf
+                      / |` \     ,-\
+                     /  \| .)   /   \
+                    ( ,&#39;|\    ,&#39;     :
+                    | \,`.`--&quot;/      &#125;
+                    `,&#39;    \  |,&#39;    /
+                   / &quot;-._   `-/      |
+                   &quot;-.   &quot;-.,&#39;|     ;
+                  /        _/[&quot;---&#39;&quot;&quot;]
+                 :        /  |&quot;-     &#39;
+                 &#39;           |      /
+                             `      |
+</code></pre>
+<blockquote>
+<blockquote>
+<p>要经常去读别人的write-ups、poc和YouTube上的视频教程</p>
+</blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://forum.bugcrowd.com/t/researcher-resources-bounty-bug-write-ups/1137">Bug Bounty write-ups and POCs</a><br>从一些成功的赏金猎人手里收集的漏洞报告</li>
+<li><a target="_blank" rel="noopener" href="https://forum.bugcrowd.com/t/researcher-resources-tutorials/370">Bug Hunting Tutorials</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.reddit.com/r/netsec">&#x2F;r&#x2F;Netsec on Reddit</a><br>Reddit上的Netsec几乎完全是技术文章和其他研究人员的POC，非常棒的资源</li>
+<li>JackkTutorials on YouTube</li>
+<li>DEFCON Conference videos on YouTube</li>
+<li>Hak5 on YouTube<br>Hak5是典型的硬件黑客，除此之外，他们还有“Metasploit Minute”节目，tips:还有NMAP的教程<blockquote>
+<p>开始了解更多关于漏洞赏金的事情吧</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://forum.bugcrowd.com/t/how-do-you-approach-a-target/293">如何更加接近目标</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.bugcrowd.com/advice-for-writing-a-great-vulnerability-report/">如何写一份超棒的漏洞报告</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.bugcrowd.com/writing-up-a-poc-by-planet-zuda">如何写POC</a><br>这展示了@jhaddix 在15年DEFCON的演讲，这个视频里面介绍他是怎样成功挖掘到漏洞的，非常有用。下面是他的github和视频<br><a target="_blank" rel="noopener" href="https://github.com/jhaddix/tbhm">https://github.com/jhaddix/tbhm</a><br><a target="_blank" rel="noopener" href="https://www.*******.com/watch?v=VtFuAH19Qz0">https://www.*******.com/watch?v=VtFuAH19Qz0</a><blockquote>
+<p>youtube吧那些字符可能是</p>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<h3 id="视频"><a href="#视频" class="headerlink" title="视频"></a>视频</h3><p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1e441127Rd?share_source=copy_web">SQLi Lab的视频</a></p>
+<blockquote>
+<p>讲得是真详细</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/23/Web-Application-Hacker-s-Handbook-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="prev" title="Web Application Hacker's Handbook 读书笔记">
+      <i class="fa fa-chevron-left"></i> Web Application Hacker's Handbook 读书笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/02/SQLi-Labs%E7%AC%94%E8%AE%B0/" rel="next" title="SQLi Labs笔记">
+      SQLi Labs笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%9D%A5%E6%BA%90%E5%95%8A%E4%BB%80%E4%B9%88%E7%9A%84"><span class="nav-number">1.</span> <span class="nav-text">信息来源啊什么的</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Attention-please"><span class="nav-number">1.0.1.</span> <span class="nav-text">Attention please</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%A7%E4%BC%9A%E5%95%8A%E5%A4%A7%E4%BC%9A"><span class="nav-number">1.0.2.</span> <span class="nav-text">大会啊大会</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%92%92%E5%AD%A6%E9%95%BF%E5%95%8A%E6%92%92%E5%AD%A6%E9%95%BF"><span class="nav-number">1.0.3.</span> <span class="nav-text">撒学长啊撒学长</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Blog"><span class="nav-number">1.0.4.</span> <span class="nav-text">Blog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%81%E4%BC%9A%E4%B8%8D%E5%96%9C%E6%AC%A2%E7%9C%8B%E4%B9%A6%E5%91%A2"><span class="nav-number">1.0.5.</span> <span class="nav-text">谁会不喜欢看书呢</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E9%A2%91"><span class="nav-number">1.0.6.</span> <span class="nav-text">视频</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">张一剑</p>
+  <div class="site-description" itemprop="description">Just for fun :D</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="mailto:YijianCS@outlook.com" title="E-Mail → mailto:YijianCS@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">鲁ICP备2021011592号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张一剑</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'default',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+</body>
+</html>
