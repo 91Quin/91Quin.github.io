@@ -23,8 +23,8 @@
 
   <meta name="description" content="为了我的14刀订阅费&#x2F;(ㄒoㄒ)&#x2F;~~">
 <meta property="og:type" content="article">
-<meta property="og:title" content="HackTheBox Tracks WalkThrough">
-<meta property="og:url" content="https://zhangyijian.cn/2022/10/22/HackTheBox-%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:title" content="HackTheBox Tracks &quot;OWASP Top 10&quot; WalkThrough">
+<meta property="og:url" content="https://zhangyijian.cn/2022/10/22/HackTheBox/HackTheBox-%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="人生边上">
 <meta property="og:description" content="为了我的14刀订阅费&#x2F;(ㄒoㄒ)&#x2F;~~">
 <meta property="og:locale" content="zh_CN">
@@ -40,14 +40,18 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/1-1-1-1.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/20221031214907.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/20221108202127.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202211121606697.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202211142251635.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202211142253040.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202211142255433.png">
 <meta property="article:published_time" content="2022-10-22T13:58:27.000Z">
-<meta property="article:modified_time" content="2022-11-12T06:42:36.690Z">
+<meta property="article:modified_time" content="2022-11-14T14:58:45.288Z">
 <meta property="article:author" content="张一剑">
 <meta property="article:tag" content="HackTheBox">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/looking_glass-1.png">
 
-<link rel="canonical" href="https://zhangyijian.cn/2022/10/22/HackTheBox-%E7%AC%94%E8%AE%B0/">
+<link rel="canonical" href="https://zhangyijian.cn/2022/10/22/HackTheBox/HackTheBox-%E7%AC%94%E8%AE%B0/">
 
 
 <script id="page-configurations">
@@ -60,7 +64,7 @@
   };
 </script>
 
-  <title>HackTheBox Tracks WalkThrough | 人生边上</title>
+  <title>HackTheBox Tracks "OWASP Top 10" WalkThrough | 人生边上</title>
   
 
 
@@ -165,7 +169,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zhangyijian.cn/2022/10/22/HackTheBox-%E7%AC%94%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="https://zhangyijian.cn/2022/10/22/HackTheBox/HackTheBox-%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -178,7 +182,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          HackTheBox Tracks WalkThrough
+          HackTheBox Tracks "OWASP Top 10" WalkThrough
         </h1>
 
         <div class="post-meta">
@@ -195,7 +199,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-11-12 14:42:36" itemprop="dateModified" datetime="2022-11-12T14:42:36+08:00">2022-11-12</time>
+                <time title="修改时间：2022-11-14 22:58:45" itemprop="dateModified" datetime="2022-11-14T22:58:45+08:00">2022-11-14</time>
               </span>
 
           
@@ -211,7 +215,8 @@
       
         <p>为了我的14刀订阅费&#x2F;(ㄒoㄒ)&#x2F;~~</p>
 <span id="more"></span>
-<h1 id="OWASP-Top-10"><a href="#OWASP-Top-10" class="headerlink" title="OWASP Top 10"></a>OWASP Top 10</h1><h2 id="looking-glass"><a href="#looking-glass" class="headerlink" title="looking glass"></a>looking glass</h2><p>一开始吧，并无头绪。但它的实例网页名是“rce”，RCE好眼熟捏。我好像知道他是个漏洞。</p>
+
+<h2 id="looking-glass"><a href="#looking-glass" class="headerlink" title="looking glass"></a>looking glass</h2><p>一开始吧，并无头绪。但它的实例网页名是“rce”，RCE好眼熟捏。我好像知道他是个漏洞。</p>
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Arbitrary_code_execution">ACE</a> arbitrary code execution<br>The ability to trigger arbitrary code execution over a network (especially via a wide-area network such as the Internet) is often referred to as remote code execution (RCE).</p>
 <p>RCE(Remote Code&#x2F;Command Execute)为远程代码&#x2F;命令执行的漏洞<br>漏洞产生的原因:在Web应用中开发者为了灵活性，简洁性等会让应用去调用代码或者系统命令执行函数去处理。同时没有考虑用户是否可以控制这些函数的参数问题（若不能控制这些参数，自然也没有这个漏洞；若能控制这些参数，也可能出现考虑了但没有完全防住或者压根没考虑 😕），以至于这个漏洞的产生。<br><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_46962006/article/details/121828362">https://blog.csdn.net/weixin_46962006/article/details/121828362</a></p>
@@ -315,6 +320,22 @@
 </ul>
 </blockquote>
 <p><em><strong>2022年11月8日</strong></em><br>我昨天躺在床上，开始想这个hackthebox，我一开始想它这个是不是对我来说没有用，但是我想了想，有一种模模糊糊的想法，即便是现在也不能表述得清晰：我应当结合它的各个实例，去发现找到现实中的漏洞；去提高对各种漏洞的敏感，知道利用的方式、特征。而我之前所利用hackthebox来学的是工具的使用，我的目的是为了挖洞，工具是其次的，无所谓的。我想我把挖洞和使用工具弄混了。</p>
+<h2 id="baby-breaking-grad"><a href="#baby-breaking-grad" class="headerlink" title="baby breaking grad"></a>baby breaking grad</h2><pre class="mermaid">graph TD
+    A[指出错误] --> B[没法毕业] --> C[动点手脚]</pre>
+<p>┑(￣Д ￣)┍</p>
+<blockquote>
+<p>先做出来，再写walkthrough。</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://hilb3r7.github.io/walkthroughs/babybreakinggrad.html">题解</a><br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202211121606697.png"></p>
+<blockquote>
+<p>2022年11月12日，为什么这个flag提交不过？？<br>2022年11月14日，费了点劲儿找到flag，emmmmm<br>这是我的burpsuite返回的：<img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202211142251635.png"><br>这是我发现的题解的flag：<img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202211142253040.png"><br>于是我又回去看youtube视频的flag：<img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202211142255433.png"><br>三者中的第二个flag是正确的。我想这可能是burpsuite字符编码的问题？</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>我的javascripts水平更不高。</li>
+<li>python，emmm，实践不怎么行。</li>
+</ul>
+</blockquote>
 
     </div>
 
@@ -337,7 +358,7 @@
       <i class="fa fa-chevron-left"></i> 投资学习(?
     </a></div>
       <div class="post-nav-item">
-    <a href="/2022/11/12/HackTheBox-Machines-WalkThrough/" rel="next" title="HackTheBox Machines WalkThrough">
+    <a href="/2022/11/12/HackTheBox/HackTheBox-Machines-WalkThrough/" rel="next" title="HackTheBox Machines WalkThrough">
       HackTheBox Machines WalkThrough <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -398,7 +419,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#OWASP-Top-10"><span class="nav-number">1.</span> <span class="nav-text">OWASP Top 10</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#looking-glass"><span class="nav-number">1.1.</span> <span class="nav-text">looking glass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sanitize"><span class="nav-number">1.2.</span> <span class="nav-text">sanitize</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-auth"><span class="nav-number">1.3.</span> <span class="nav-text">baby auth</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-nginxatsu"><span class="nav-number">1.4.</span> <span class="nav-text">baby nginxatsu</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-WAFfles-order"><span class="nav-number">1.5.</span> <span class="nav-text">baby WAFfles order</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-todo-or-not-todo"><span class="nav-number">1.6.</span> <span class="nav-text">baby todo or not todo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-BoneChewerCon"><span class="nav-number">1.7.</span> <span class="nav-text">baby BoneChewerCon</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Stack-Conf"><span class="nav-number">1.8.</span> <span class="nav-text">Full Stack Conf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-website-rick"><span class="nav-number">1.9.</span> <span class="nav-text">baby website rick</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#looking-glass"><span class="nav-number">1.</span> <span class="nav-text">looking glass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sanitize"><span class="nav-number">2.</span> <span class="nav-text">sanitize</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-auth"><span class="nav-number">3.</span> <span class="nav-text">baby auth</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-nginxatsu"><span class="nav-number">4.</span> <span class="nav-text">baby nginxatsu</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-WAFfles-order"><span class="nav-number">5.</span> <span class="nav-text">baby WAFfles order</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-todo-or-not-todo"><span class="nav-number">6.</span> <span class="nav-text">baby todo or not todo</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-BoneChewerCon"><span class="nav-number">7.</span> <span class="nav-text">baby BoneChewerCon</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Full-Stack-Conf"><span class="nav-number">8.</span> <span class="nav-text">Full Stack Conf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-website-rick"><span class="nav-number">9.</span> <span class="nav-text">baby website rick</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#baby-breaking-grad"><span class="nav-number">10.</span> <span class="nav-text">baby breaking grad</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
