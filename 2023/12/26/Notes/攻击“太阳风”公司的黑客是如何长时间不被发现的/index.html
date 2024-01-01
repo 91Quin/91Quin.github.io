@@ -21,30 +21,37 @@
     var CONFIG = {"hostname":"zhangyijian.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":"mac","style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Just for fun :D">
-<meta property="og:type" content="website">
-<meta property="og:title" content="人生边上">
-<meta property="og:url" content="https://zhangyijian.cn/page/2/index.html">
+  <meta name="description" content="本文翻译自The Hacker News上的一篇文章 Here’s How SolarWinds Hackers Stayed Undetected for Long Enough。本文的翻译仅供教育和学习目的，不代表本人的任何观点或立场，也不对本文的内容的真实性、准确性或完整性负责。本文的版权归原作者或出版商所有，本人已经向原作者或出版商的提出对授权或许可的申请。如果原作者或出版商对本文的翻译">
+<meta property="og:type" content="article">
+<meta property="og:title" content="攻击“太阳风”公司的黑客是如何长时间不被发现的">
+<meta property="og:url" content="https://zhangyijian.cn/2023/12/26/Notes/%E6%94%BB%E5%87%BB%E2%80%9C%E5%A4%AA%E9%98%B3%E9%A3%8E%E2%80%9D%E5%85%AC%E5%8F%B8%E7%9A%84%E9%BB%91%E5%AE%A2%E6%98%AF%E5%A6%82%E4%BD%95%E9%95%BF%E6%97%B6%E9%97%B4%E4%B8%8D%E8%A2%AB%E5%8F%91%E7%8E%B0%E7%9A%84/index.html">
 <meta property="og:site_name" content="人生边上">
-<meta property="og:description" content="Just for fun :D">
+<meta property="og:description" content="本文翻译自The Hacker News上的一篇文章 Here’s How SolarWinds Hackers Stayed Undetected for Long Enough。本文的翻译仅供教育和学习目的，不代表本人的任何观点或立场，也不对本文的内容的真实性、准确性或完整性负责。本文的版权归原作者或出版商所有，本人已经向原作者或出版商的提出对授权或许可的申请。如果原作者或出版商对本文的翻译">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://thehackernews.com/images/-T1eeFirjqG4/YAlp_MHmJqI/AAAAAAAABjY/tv2o5SlcPi40bFmfaH7uuuXfOECfw0S9ACLcBGAsYHQ/s0/hacker.jpg">
+<meta property="og:image" content="https://thehackernews.com/images/-_1gBN0nXoT8/YAlqMiYkAlI/AAAAAAAABjc/JEM0BoEsxyMMCp5Jo4olRVjKsCLVzBTkgCLcBGAsYHQ/s0/malware.jpg">
+<meta property="article:published_time" content="2023-12-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-01-01T12:04:12.890Z">
 <meta property="article:author" content="张一剑">
+<meta property="article:tag" content="翻译&#x2F;cybersecurity">
+<meta property="article:tag" content="知识&#x2F;cybersecurity">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://thehackernews.com/images/-T1eeFirjqG4/YAlp_MHmJqI/AAAAAAAABjY/tv2o5SlcPi40bFmfaH7uuuXfOECfw0S9ACLcBGAsYHQ/s0/hacker.jpg">
 
-<link rel="canonical" href="https://zhangyijian.cn/page/2/">
+<link rel="canonical" href="https://zhangyijian.cn/2023/12/26/Notes/%E6%94%BB%E5%87%BB%E2%80%9C%E5%A4%AA%E9%98%B3%E9%A3%8E%E2%80%9D%E5%85%AC%E5%8F%B8%E7%9A%84%E9%BB%91%E5%AE%A2%E6%98%AF%E5%A6%82%E4%BD%95%E9%95%BF%E6%97%B6%E9%97%B4%E4%B8%8D%E8%A2%AB%E5%8F%91%E7%8E%B0%E7%9A%84/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>人生边上</title>
+  <title>攻击“太阳风”公司的黑客是如何长时间不被发现的 | 人生边上</title>
   
 
 
@@ -142,13 +149,14 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zhangyijian.cn/2022/11/12/HackTheBox/HackTheBox-Machines-WalkThrough/">
+    <link itemprop="mainEntityOfPage" href="https://zhangyijian.cn/2023/12/26/Notes/%E6%94%BB%E5%87%BB%E2%80%9C%E5%A4%AA%E9%98%B3%E9%A3%8E%E2%80%9D%E5%85%AC%E5%8F%B8%E7%9A%84%E9%BB%91%E5%AE%A2%E6%98%AF%E5%A6%82%E4%BD%95%E9%95%BF%E6%97%B6%E9%97%B4%E4%B8%8D%E8%A2%AB%E5%8F%91%E7%8E%B0%E7%9A%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -160,76 +168,9 @@
       <meta itemprop="name" content="人生边上">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/11/12/HackTheBox/HackTheBox-Machines-WalkThrough/" class="post-title-link" itemprop="url">HackTheBox Machines WalkThrough</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-11-12 14:37:21 / 修改时间：14:43:59" itemprop="dateCreated datePublished" datetime="2022-11-12T14:37:21+08:00">2022-11-12</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>感觉Machines的难度要比challenges高一点</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/12/HackTheBox/HackTheBox-Machines-WalkThrough/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zhangyijian.cn/2022/06/02/Notes/SQLi-Labs%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="张一剑">
-      <meta itemprop="description" content="Just for fun :D">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="人生边上">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/06/02/Notes/SQLi-Labs%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">SQLi Labs笔记</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          攻击“太阳风”公司的黑客是如何长时间不被发现的
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -238,14 +179,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2022-06-02 14:37:41" itemprop="dateCreated datePublished" datetime="2022-06-02T14:37:41+08:00">2022-06-02</time>
+              <time title="创建时间：2023-12-26 00:00:00" itemprop="dateCreated datePublished" datetime="2023-12-26T00:00:00+08:00">2023-12-26</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-06-30 14:12:30" itemprop="dateModified" datetime="2022-06-30T14:12:30+08:00">2022-06-30</time>
+                <time title="修改时间：2024-01-01 20:04:12" itemprop="dateModified" datetime="2024-01-01T20:04:12+08:00">2024-01-01</time>
               </span>
 
           
@@ -259,174 +200,50 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>emmmmm</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/06/02/Notes/SQLi-Labs%E7%AC%94%E8%AE%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zhangyijian.cn/2022/06/02/Notes/%E6%8A%95%E8%B5%84%E5%AD%A6%E4%B9%A0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="张一剑">
-      <meta itemprop="description" content="Just for fun :D">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="人生边上">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/06/02/Notes/%E6%8A%95%E8%B5%84%E5%AD%A6%E4%B9%A0/" class="post-title-link" itemprop="url">投资学习(?</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2022-06-02 14:46:12 / 修改时间：14:49:10" itemprop="dateCreated datePublished" datetime="2022-06-02T14:46:12+08:00">2022-06-02</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>说实话我也不知道我在干什么。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/06/02/Notes/%E6%8A%95%E8%B5%84%E5%AD%A6%E4%B9%A0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zhangyijian.cn/2021/11/23/Notes/Web-Application-Hacker-s-Handbook-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="张一剑">
-      <meta itemprop="description" content="Just for fun :D">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="人生边上">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/11/23/Notes/Web-Application-Hacker-s-Handbook-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">Web Application Hacker's Handbook 读书笔记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-11-23 10:13:00" itemprop="dateCreated datePublished" datetime="2021-11-23T10:13:00+08:00">2021-11-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-19 20:27:36" itemprop="dateModified" datetime="2022-05-19T20:27:36+08:00">2022-05-19</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <blockquote>
-<p>好吧，标题是挺长的。但确实能表达这篇文章是要干嘛。</p>
+        <blockquote>
+<p>本文翻译自<strong>The Hacker News</strong>上的一篇文章 <a target="_blank" rel="noopener" href="https://thehackernews.com/2021/01/heres-how-solarwinds-hackers-stayed.html">Here’s How SolarWinds Hackers Stayed Undetected for Long Enough</a>。本文的翻译仅供教育和学习目的，不代表本人的任何观点或立场，也不对本文的内容的真实性、准确性或完整性负责。本文的版权归原作者或出版商所有，本人已经向原作者或出版商的提出对授权或许可的申请。如果原作者或出版商对本文的翻译有任何异议或要求，本人将立即删除本文，并向原作者或出版商致以诚挚的歉意。</p>
 </blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/11/23/Notes/Web-Application-Hacker-s-Handbook-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+<span id="more"></span>
+<p>在这周三（即2021年1月20日，原文写于2021年1月21日），得益于安全团队为了弄清最近这一最复杂老练的黑客攻击所做出的种种努力，微软分享了更多有关“SolarWinds”（以下称太阳风公司）所受到的黑客攻击的策略、技术、程序（即TTPs，tactics , techniques , and procedures)的细节，攻击太阳风公司的黑客借助这些技术来保持隐匿的同时避免被探测到。<br>微软称，这些攻击实施者“技艺精湛且有策略，同时在实践中很好地遵循了操作安全（OpSec）准则”。同时据微软称，这些攻击者竭尽全力来确保初始的<a target="_blank" rel="noopener" href="https://thehackernews.com/2020/12/us-agencies-and-fireeye-were-hacked.html">Sunburst后门</a>(微软将之称为Solorigate)和侵入后所植入的恶意程序（<a target="_blank" rel="noopener" href="https://thehackernews.com/2020/12/a-second-hacker-group-may-have-also.html">Teardrop</a> 和 <a target="_blank" rel="noopener" href="https://thehackernews.com/2021/01/researchers-discover-raindrop-4th.html">Raindrop</a>)被分离开，以便尽可能地防止他们的恶意行为被发现。<br>尽管黑客组织的身份还不清楚，安全公司CrowdStrike将其称为<a target="_blank" rel="noopener" href="https://thehackernews.com/2020/12/microsoft-warns-crowdstrike-of-hackers.html">StellarParticle</a>,安全公司FireEye将其命名为UNC2452，安全公司Palo Alto Unit 42 将其称为<a target="_blank" rel="noopener" href="https://unit42.paloaltonetworks.com/fireeye-solarstorm-sunburst/">SolarStorm</a>,安全公司Volexity将其称为<a target="_blank" rel="noopener" href="https://www.volexity.com/blog/2020/12/14/dark-halo-leverages-solarwinds-compromise-to-breach-organizations/">Dark Halo</a>，美国政府在这个月早些时候正式地把这次黑客攻击定性为间谍活动，并与可能来自俄罗斯的黑客组织联系起来。</p>
+<h2 id="一系列被用来保持隐匿的策略"><a href="#一系列被用来保持隐匿的策略" class="headerlink" title="一系列被用来保持隐匿的策略"></a>一系列被用来保持隐匿的策略</h2><p>微软所发布的攻击活动时间线显示，在2020年二月20日，功能齐全的Sunburst DLL后门被编译并部署在太阳风公司的Orion平台中；紧接着在随后的三月中，它借助被篡改的更新分发恶意代码。<img src="https://thehackernews.com/images/-T1eeFirjqG4/YAlp_MHmJqI/AAAAAAAABjY/tv2o5SlcPi40bFmfaH7uuuXfOECfw0S9ACLcBGAsYHQ/s0/hacker.jpg"><br>黑客组织用了几乎两个月的时间来获取它目标的基本情况。在这过程中，需要它在持续保持隐匿的同时，收集有价值的信息。黑客组织在这一过程中，为其在之后的五月向选定的受害网络植入Cobalt Strike恶意代码和在六月4号从太阳风公司的生产环境中移除Sunburst后门做好了准备。<br>但是对于黑客组织是怎么样、是什么时候从Sunburst转移到Raindrop的，尚且没有清晰的线索，甚至有证据显示攻击者采取操作安全（Opsec）策略，深思熟虑地把Cobalt Strike加载器的执行进程与太阳风公司进程分离开。<img src="https://thehackernews.com/images/-_1gBN0nXoT8/YAlqMiYkAlI/AAAAAAAABjc/JEM0BoEsxyMMCp5Jo4olRVjKsCLVzBTkgCLcBGAsYHQ/s0/malware.jpg"><br>这一想法，是出于即使目标网络上的Cobalt Strike 植入代码被发现，它也不会暴露被篡改的太阳风程序，和在第一步时分发恶意代码的供应链攻击。<br>研究同时阐明了，在黑客利用一系列攻击载体进行攻击的同时，被木马化了的太阳风软件完成了间谍活动的核心操作。</p>
+<ul>
+<li>通过在每个系统上部署定制的Cobalt Strike DLL 植入代码，有策略地避免了被入侵主机共享恶意代码样本。</li>
+<li>在被入侵主机上把恶意工具和恶意程序伪装成已经存在的文件和项目</li>
+<li></li>
+</ul>
+
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
+          <div class="post-tags">
+              <a href="/tags/%E7%BF%BB%E8%AF%91-cybersecurity/" rel="tag"># 翻译/cybersecurity</a>
+              <a href="/tags/%E7%9F%A5%E8%AF%86-cybersecurity/" rel="tag"># 知识/cybersecurity</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/12/20/Notes/%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D%E7%AE%80%E5%8F%B2%E5%90%8E%E8%AE%B0%E8%AF%BB%E5%90%8E%E6%84%9F/" rel="prev" title="数字签名密史后记读后感">
+      <i class="fa fa-chevron-left"></i> 数字签名密史后记读后感
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/12/28/Notes/%E5%AE%89%E5%85%A8%E5%A4%9A%E6%96%B9%E8%AE%A1%E7%AE%97/" rel="next" title="安全多方计算">
+      安全多方计算 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
       </footer>
+    
   </article>
   
   
   
-
-
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
-  </nav>
 
 
 
@@ -478,6 +295,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E7%B3%BB%E5%88%97%E8%A2%AB%E7%94%A8%E6%9D%A5%E4%BF%9D%E6%8C%81%E9%9A%90%E5%8C%BF%E7%9A%84%E7%AD%96%E7%95%A5"><span class="nav-number">1.</span> <span class="nav-text">一系列被用来保持隐匿的策略</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
