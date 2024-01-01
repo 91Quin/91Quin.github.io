@@ -179,7 +179,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-01 20:04:41" itemprop="dateModified" datetime="2024-01-01T20:04:41+08:00">2024-01-01</time>
+                <time title="修改时间：2024-01-01 20:06:00" itemprop="dateModified" datetime="2024-01-01T20:06:00+08:00">2024-01-01</time>
               </span>
 
           
@@ -193,47 +193,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <span id="more"></span>
-<h3 id="Multi-Protocol-SPDZ"><a href="#Multi-Protocol-SPDZ" class="headerlink" title="Multi-Protocol SPDZ"></a><a target="_blank" rel="noopener" href="https://github.com/data61/MP-SPDZ">Multi-Protocol SPDZ</a></h3><h3 id="文档"><a href="#文档" class="headerlink" title="文档"></a><a target="_blank" rel="noopener" href="https://mp-spdz.readthedocs.io/en/latest/">文档</a></h3><h5 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h5><blockquote>
-<p>“TL;DR” $\leftrightarrow$”too long;didn’t read”</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install automake build-essential clang cmake git libboost-dev libboost-thread-dev libgmp-dev libntl-dev libsodium-dev libssl-dev libtool python3</span><br></pre></td></tr></table></figure>
-<ul>
-<li>build-essential 包即为arch里的base-devel<blockquote>
-<p><a target="_blank" rel="noopener" href="https://ubuntuforums.org/showthread.php?t=948419">https://ubuntuforums.org/showthread.php?t=948419</a></p>
-</blockquote>
-</li>
-<li>libboost-dev 等包，arch的命名与Debian系命名不同</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>libboost-dev</th>
-<th>libboost-thread-dev</th>
-<th>libgmp-dev</th>
-<th>libntl-dev</th>
-<th>libsodium-dev</th>
-<th>libssl-dev</th>
-<th>libtool</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>arch源中有boost,boost-libs</td>
-<td>同左侧，archlinux中boost包搞得很大，似乎是把什么都塞进去了</td>
-<td>同理，gmp</td>
-<td>ntl</td>
-<td>Network communication，cryptography and signaturing library, 简写为Nacl，发音salt，lmao 。在arch源中是libsodium,同时还有个php-sodium</td>
-<td>同理，包含在arch openssl库中</td>
-<td>GNU的工具，在arch源中也是libtool</td>
-</tr>
-</tbody></table>
-<blockquote>
-<p>顺嘴一提啊，markdown这个表格搞得很是梦靥，虽然最后渲染出来还行</p>
-</blockquote>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S automake base-devel clang cmake git boost boost-libs gmp ntl libsodium openssl libtool python3</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/data61/MP-SPDZ.git</span><br><span class="line">make setup</span><br><span class="line">make -j8 mascot-party.x  <span class="comment">#?</span></span><br><span class="line"><span class="built_in">echo</span> 1 2 3 4 &gt; Player-Data/Input-P0-0</span><br><span class="line"><span class="built_in">echo</span> 1 2 3 4 &gt; Player-Data/Input-P1-0</span><br><span class="line">Scripts/compile-run.py -E mascot tutorial</span><br></pre></td></tr></table></figure>
-
-
-
+          <p>干懵了。<br>            -2024年1月1日</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2023/12/28/Notes/%E5%AE%89%E5%85%A8%E5%A4%9A%E6%96%B9%E8%AE%A1%E7%AE%97/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
