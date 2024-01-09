@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://thehackernews.com/images/-T1eeFirjqG4/YAlp_MHmJqI/AAAAAAAABjY/tv2o5SlcPi40bFmfaH7uuuXfOECfw0S9ACLcBGAsYHQ/s0/hacker.jpg">
 <meta property="og:image" content="https://thehackernews.com/images/-_1gBN0nXoT8/YAlqMiYkAlI/AAAAAAAABjc/JEM0BoEsxyMMCp5Jo4olRVjKsCLVzBTkgCLcBGAsYHQ/s0/malware.jpg">
 <meta property="article:published_time" content="2023-12-25T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-01-01T12:04:12.890Z">
+<meta property="article:modified_time" content="2024-01-08T14:41:56.032Z">
 <meta property="article:author" content="张一剑">
 <meta property="article:tag" content="知识&#x2F;cybersecurity">
 <meta property="article:tag" content="翻译&#x2F;cybersecurity">
@@ -186,7 +186,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-01 20:04:12" itemprop="dateModified" datetime="2024-01-01T20:04:12+08:00">2024-01-01</time>
+                <time title="修改时间：2024-01-08 22:41:56" itemprop="dateModified" datetime="2024-01-08T22:41:56+08:00">2024-01-08</time>
               </span>
 
           
@@ -204,13 +204,26 @@
 <p>本文翻译自<strong>The Hacker News</strong>上的一篇文章 <a target="_blank" rel="noopener" href="https://thehackernews.com/2021/01/heres-how-solarwinds-hackers-stayed.html">Here’s How SolarWinds Hackers Stayed Undetected for Long Enough</a>。本文的翻译仅供教育和学习目的，不代表本人的任何观点或立场，也不对本文的内容的真实性、准确性或完整性负责。本文的版权归原作者或出版商所有，本人已经向原作者或出版商的提出对授权或许可的申请。如果原作者或出版商对本文的翻译有任何异议或要求，本人将立即删除本文，并向原作者或出版商致以诚挚的歉意。</p>
 </blockquote>
 <span id="more"></span>
-<p>在这周三（即2021年1月20日，原文写于2021年1月21日），得益于安全团队为了弄清最近这一最复杂老练的黑客攻击所做出的种种努力，微软分享了更多有关“SolarWinds”（以下称太阳风公司）所受到的黑客攻击的策略、技术、程序（即TTPs，tactics , techniques , and procedures)的细节，攻击太阳风公司的黑客借助这些技术来保持隐匿的同时避免被探测到。<br>微软称，这些攻击实施者“技艺精湛且有策略，同时在实践中很好地遵循了操作安全（OpSec）准则”。同时据微软称，这些攻击者竭尽全力来确保初始的<a target="_blank" rel="noopener" href="https://thehackernews.com/2020/12/us-agencies-and-fireeye-were-hacked.html">Sunburst后门</a>(微软将之称为Solorigate)和侵入后所植入的恶意程序（<a target="_blank" rel="noopener" href="https://thehackernews.com/2020/12/a-second-hacker-group-may-have-also.html">Teardrop</a> 和 <a target="_blank" rel="noopener" href="https://thehackernews.com/2021/01/researchers-discover-raindrop-4th.html">Raindrop</a>)被分离开，以便尽可能地防止他们的恶意行为被发现。<br>尽管黑客组织的身份还不清楚，安全公司CrowdStrike将其称为<a target="_blank" rel="noopener" href="https://thehackernews.com/2020/12/microsoft-warns-crowdstrike-of-hackers.html">StellarParticle</a>,安全公司FireEye将其命名为UNC2452，安全公司Palo Alto Unit 42 将其称为<a target="_blank" rel="noopener" href="https://unit42.paloaltonetworks.com/fireeye-solarstorm-sunburst/">SolarStorm</a>,安全公司Volexity将其称为<a target="_blank" rel="noopener" href="https://www.volexity.com/blog/2020/12/14/dark-halo-leverages-solarwinds-compromise-to-breach-organizations/">Dark Halo</a>，美国政府在这个月早些时候正式地把这次黑客攻击定性为间谍活动，并与可能来自俄罗斯的黑客组织联系起来。</p>
-<h2 id="一系列被用来保持隐匿的策略"><a href="#一系列被用来保持隐匿的策略" class="headerlink" title="一系列被用来保持隐匿的策略"></a>一系列被用来保持隐匿的策略</h2><p>微软所发布的攻击活动时间线显示，在2020年二月20日，功能齐全的Sunburst DLL后门被编译并部署在太阳风公司的Orion平台中；紧接着在随后的三月中，它借助被篡改的更新分发恶意代码。<img src="https://thehackernews.com/images/-T1eeFirjqG4/YAlp_MHmJqI/AAAAAAAABjY/tv2o5SlcPi40bFmfaH7uuuXfOECfw0S9ACLcBGAsYHQ/s0/hacker.jpg"><br>黑客组织用了几乎两个月的时间来获取它目标的基本情况。在这过程中，需要它在持续保持隐匿的同时，收集有价值的信息。黑客组织在这一过程中，为其在之后的五月向选定的受害网络植入Cobalt Strike恶意代码和在六月4号从太阳风公司的生产环境中移除Sunburst后门做好了准备。<br>但是对于黑客组织是怎么样、是什么时候从Sunburst转移到Raindrop的，尚且没有清晰的线索，甚至有证据显示攻击者采取操作安全（Opsec）策略，深思熟虑地把Cobalt Strike加载器的执行进程与太阳风公司进程分离开。<img src="https://thehackernews.com/images/-_1gBN0nXoT8/YAlqMiYkAlI/AAAAAAAABjc/JEM0BoEsxyMMCp5Jo4olRVjKsCLVzBTkgCLcBGAsYHQ/s0/malware.jpg"><br>这一想法，是出于即使目标网络上的Cobalt Strike 植入代码被发现，它也不会暴露被篡改的太阳风程序，和在第一步时分发恶意代码的供应链攻击。<br>研究同时阐明了，在黑客利用一系列攻击载体进行攻击的同时，被木马化了的太阳风软件完成了间谍活动的核心操作。</p>
+<p>在这周三（即2021年1月20日，原文写于2021年1月21日），得益于安全团队为了弄清最近这一最复杂老练的黑客攻击所做出的种种努力，微软分享了更多有关“SolarWinds”（以下称太阳风公司）所受到的黑客攻击的策略、技术、程序（即TTPs，tactics , techniques , and procedures)的细节，攻击太阳风公司的黑客借助这些技术来保持隐匿的同时避免被探测到。</p>
+<p>微软称，这些攻击实施者“技艺精湛且有策略，同时在实践中很好地遵循了操作安全（OpSec）准则”。同时据微软称，这些攻击者竭尽全力来确保初始的<a target="_blank" rel="noopener" href="https://thehackernews.com/2020/12/us-agencies-and-fireeye-were-hacked.html">Sunburst后门</a>(微软将之称为Solorigate)和侵入后所植入的恶意程序（<a target="_blank" rel="noopener" href="https://thehackernews.com/2020/12/a-second-hacker-group-may-have-also.html">Teardrop</a> 和 <a target="_blank" rel="noopener" href="https://thehackernews.com/2021/01/researchers-discover-raindrop-4th.html">Raindrop</a>)被分离开，以便尽可能地防止他们的恶意行为被发现。</p>
+<p>来自微软365安全团队，微软威胁情报中心（MSTIC），微软网络安全中心（CDOC）的研究人员称，“在Solorigate事件中，攻击者是富于经验的黑客组织，他们精心策划和实施了这次攻击，在保持持久化攻击的同时保持隐匿。”</p>
+<p>尽管黑客组织的身份还不清楚，安全公司CrowdStrike将其称为<a target="_blank" rel="noopener" href="https://thehackernews.com/2020/12/microsoft-warns-crowdstrike-of-hackers.html">StellarParticle</a>,安全公司FireEye将其命名为UNC2452，安全公司Palo Alto Unit 42 将其称为<a target="_blank" rel="noopener" href="https://unit42.paloaltonetworks.com/fireeye-solarstorm-sunburst/">SolarStorm</a>,安全公司Volexity将其称为<a target="_blank" rel="noopener" href="https://www.volexity.com/blog/2020/12/14/dark-halo-leverages-solarwinds-compromise-to-breach-organizations/">Dark Halo</a>，美国政府在这个月早些时候正式地把这次黑客攻击定性为间谍活动，并与可能来自俄罗斯的黑客组织联系起来。</p>
+<h2 id="一系列被用来保持隐匿的策略"><a href="#一系列被用来保持隐匿的策略" class="headerlink" title="一系列被用来保持隐匿的策略"></a>一系列被用来保持隐匿的策略</h2><p>微软所发布的攻击活动时间线显示，在2020年二月20日，功能齐全的Sunburst DLL后门被编译并部署在太阳风公司的Orion平台中；紧接着在随后的三月中，它借助被篡改的更新分发恶意代码。<img src="https://thehackernews.com/images/-T1eeFirjqG4/YAlp_MHmJqI/AAAAAAAABjY/tv2o5SlcPi40bFmfaH7uuuXfOECfw0S9ACLcBGAsYHQ/s0/hacker.jpg"></p>
+<p>黑客组织用了几乎两个月的时间来获取它目标的基本情况。在这过程中，需要它在持续保持隐匿的同时，收集有价值的信息。黑客组织在这一过程中，为其在之后的五月向选定的受害网络植入Cobalt Strike恶意代码和在六月4号从太阳风公司的生产环境中移除Sunburst后门做好了准备。</p>
+<p>但是对于黑客组织是怎么样、是什么时候从Sunburst转移到Raindrop的，尚且没有清晰的线索，甚至有证据显示攻击者采取操作安全（Opsec）策略，深思熟虑地把Cobalt Strike加载器的执行进程与太阳风公司进程分离开。<img src="https://thehackernews.com/images/-_1gBN0nXoT8/YAlqMiYkAlI/AAAAAAAABjc/JEM0BoEsxyMMCp5Jo4olRVjKsCLVzBTkgCLcBGAsYHQ/s0/malware.jpg"></p>
+<p>这一想法，是出于即使目标网络上的Cobalt Strike 植入代码被发现，它也不会暴露被篡改的太阳风程序或是在第一步时分发恶意代码的供应链攻击。</p>
+<p>研究同时阐明了，在黑客利用一系列攻击载体进行攻击的同时，被木马化了的太阳风软件完成了渗透活动的核心操作：</p>
 <ul>
-<li>通过在每个系统上部署定制的Cobalt Strike DLL 植入代码，有策略地避免了被入侵主机共享恶意代码样本。</li>
+<li>在每个系统上部署定制的Cobalt Strike DLL 植入代码，有策略地避免了被入侵主机共享恶意代码样本。</li>
 <li>在被入侵主机上把恶意工具和恶意程序伪装成已经存在的文件和项目</li>
-<li></li>
+<li>在开始<a target="_blank" rel="noopener" href="https://www.microsoft.com/security/blog/2020/12/28/using-microsoft-365-defender-to-coordinate-protection-against-solorigate/">手动键盘活动 (hands-on keyboard activity)</a>]之前，使用审核策略程序AUDITPOL禁用了事件日志。同时，攻击者一旦完成手动的键盘活动，会再次启动事件日志。</li>
+<li>在开始进行繁忙的<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Network_enumeration#:~:text=Network%20enumeration%20is%20a%20computing,operating%20system%20runs%20on%20them.">网络枚举</a>之前，创建了特殊的防火墙规则，以此使特定协议的外发数据包数量最小化。在完成了网络探查后，这些防火墙规则也被移除。</li>
+<li>仅在禁用目标主机上的安全服务之后，才会执行横向攻击。</li>
+<li>虽然没有确凿的证据，但显然使用了时间戳修改攻击来篡改文件的时间戳，并利用擦除程序、工具来防止植入的恶意DLL程序被发现。</li>
 </ul>
+<h2 id="采用“零信任”机制"><a href="#采用“零信任”机制" class="headerlink" title="采用“零信任”机制"></a>采用“零信任”机制</h2><p>微软称，“这次攻击表现得既复杂又普通。攻击者针对受影响的设施，在渗透、扩大、持久化攻击时的策略展现出高超的技巧；但是许多策略、技术和程序(TTPs) 单独看来都稀松平常。”</p>
+<p>为了防范未来可能出现的这种类型的攻击，微软建议组织机构采用“零信任”机制，使用多因素认证来实现最小特权访问同时最小化风险。</p>
+<p>微软的身份安全负责人Alex Weinert称，“在Solorigate事件中，攻击者利用过度的角色分配、超出角色需求的权限和某些情况下本应没有任何权限的废弃账户，达到了攻击的目的。”</p>
 
     </div>
 
@@ -295,7 +308,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E7%B3%BB%E5%88%97%E8%A2%AB%E7%94%A8%E6%9D%A5%E4%BF%9D%E6%8C%81%E9%9A%90%E5%8C%BF%E7%9A%84%E7%AD%96%E7%95%A5"><span class="nav-number">1.</span> <span class="nav-text">一系列被用来保持隐匿的策略</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E7%B3%BB%E5%88%97%E8%A2%AB%E7%94%A8%E6%9D%A5%E4%BF%9D%E6%8C%81%E9%9A%90%E5%8C%BF%E7%9A%84%E7%AD%96%E7%95%A5"><span class="nav-number">1.</span> <span class="nav-text">一系列被用来保持隐匿的策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%87%E7%94%A8%E2%80%9C%E9%9B%B6%E4%BF%A1%E4%BB%BB%E2%80%9D%E6%9C%BA%E5%88%B6"><span class="nav-number">2.</span> <span class="nav-text">采用“零信任”机制</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
