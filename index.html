@@ -173,7 +173,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2024-02-27 00:00:00 / 修改时间：22:48:04" itemprop="dateCreated datePublished" datetime="2024-02-27T00:00:00+08:00">2024-02-27</time>
+              <time title="创建时间：2024-02-27 00:00:00 / 修改时间：22:50:00" itemprop="dateCreated datePublished" datetime="2024-02-27T00:00:00+08:00">2024-02-27</time>
             </span>
 
           
@@ -187,81 +187,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="Insecure-deserialization"><a href="#Insecure-deserialization" class="headerlink" title="Insecure deserialization"></a>Insecure deserialization</h1><h2 id="What-is-serialization"><a href="#What-is-serialization" class="headerlink" title="What is serialization?"></a>What is serialization?</h2><blockquote>
-<p><strong>Serialization</strong> is the process of converting complex data structures, such as objects and their fields, into a “flatter” format that can be sent and received as a sequential stream of bytes.</p>
-</blockquote>
-<p>序列化：把对象转换成bytes流，以便向进程内存、文件或是数据库中写入复杂数据( complex data ，我理解的既是图中的object)</p>
-<h3 id="Serialization-vs-deserialization"><a href="#Serialization-vs-deserialization" class="headerlink" title="Serialization vs deserialization"></a>Serialization vs deserialization</h3><p>反序列化Serialization即是把Stream of Bytes再转换成序列化之前的object<br>![[Pasted image 20240227164458.png]]不同语言的序列化方式不同，最后可能转换成二进制或者字符串。对象的属性（包括私有属性）也会被转化到Stream of Bytes。如果这个字段不想被序列化，需要标记为”transient”</p>
-<h2 id="What-is-insecure-deserialization"><a href="#What-is-insecure-deserialization" class="headerlink" title="What is insecure deserialization?"></a>What is insecure deserialization?</h2><p>网站反序列化数据时，如果这个数据可以被用户控制，attacker就可能利用被序列化的对象，向程序代码中插入有害信息。</p>
-<blockquote>
-<p>介不还是注入吗？</p>
-</blockquote>
-<p>甚至可能用另一类对象替代一个被序列化的对象。</p>
-<blockquote>
-<p>insecure deserialization is sometimes known as an “object injection” vulnerability.确实是注入</p>
-</blockquote>
-<p>对象的类和预期不符就可能造成意料之外的结果，然后就造成损害了。许多利用反序列化漏洞的攻击，在完成反序列化过程之前，就完成了。因此，即便是网站自身功能不与恶意对象交互，反序列化过程本身就会完成attack。这样的话，即便网站logic使用strongly typed languages，也会受影响。</p>
-<h2 id="How-do-insecure-deserialization-vulnerabilities-arise"><a href="#How-do-insecure-deserialization-vulnerabilities-arise" class="headerlink" title="How do insecure deserialization vulnerabilities arise?"></a>How do insecure deserialization vulnerabilities arise?</h2><p>反序列化漏洞出现，一般就是因为对用户可控数据能造成的危害缺乏认识。</p>
-<p>有时网站使用额外的安全检查，也不一定有效。因为不可能每种情况都靠徐到，而且往往是在反序列化过程后检查，这就晚了。</p>
-<h2 id="What-is-the-impact-of-insecure-deserialization"><a href="#What-is-the-impact-of-insecure-deserialization" class="headerlink" title="What is the impact of insecure deserialization?"></a>What is the impact of insecure deserialization?</h2><p>一般都很严重，因为可以极大地扩大攻击面，允许攻击者重用程序代码，最后可能就rce了。就算不能rce，也会导致越权，任意文件访问和dos攻击。</p>
-<h1 id="Exploiting-insecure-deserialization-vulnerabilities"><a href="#Exploiting-insecure-deserialization-vulnerabilities" class="headerlink" title="Exploiting insecure deserialization vulnerabilities"></a>Exploiting insecure deserialization vulnerabilities</h1><blockquote>
-<p>We hope to demonstrate how exploiting insecure deserialization is actually much easier than many people believe. This is even the case during blackbox testing if you are able to use pre-built gadget chains.似乎看到了熟悉的东西，这个gadget chains会是什么呢？</p>
-</blockquote>
-<h2 id="How-to-identify-insecure-deserialization"><a href="#How-to-identify-insecure-deserialization" class="headerlink" title="How to identify insecure deserialization"></a>How to identify insecure deserialization</h2><h3 id="PHP-serialization-format"><a href="#PHP-serialization-format" class="headerlink" title="PHP serialization format"></a>PHP serialization format</h3><p>php就用mostly human-readable string format，字母代表数据类型，数字代表每一项的长度。</p>
-<figure class="highlight plaintext"><figcaption><span>```object with the attributes:</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">```php</span><br><span class="line">$user-&gt;name = &quot;carlos&quot;; </span><br><span class="line">$user-&gt;isLoggedIn = true;</span><br></pre></td></tr></table></figure>
-<p>序列化之后：</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">O:<span class="number">4</span>:<span class="string">&quot;User&quot;</span>:<span class="number">2</span>:&#123;s:<span class="number">4</span>:<span class="string">&quot;name&quot;</span>:s:<span class="number">6</span>:<span class="string">&quot;carlos&quot;</span>; s:<span class="number">10</span>:<span class="string">&quot;isLoggedIn&quot;</span>:b:<span class="number">1</span>;&#125;</span><br></pre></td></tr></table></figure>
-<p>![[Pasted image 20240227172933.png]]<br>相应php函数：<code>serialize()</code> <code>unserialize()</code></p>
-<h3 id="Java-serialization-format"><a href="#Java-serialization-format" class="headerlink" title="Java serialization format"></a>Java serialization format</h3><p>Java使用二进制序列化格式。但是如果知道怎么去辨别一些迹象，还是能分辨出serialized data的。</p>
-<blockquote>
-<p>For example, serialized Java objects always begin with the same bytes, which are encoded as <code>ac ed</code> in hexadecimal and <code>rO0</code> in Base64.</p>
-</blockquote>
-<p>对Java来说，则需要关注<code>readObject()</code>，这个函数被用来读和反序列化输入流的数据</p>
-<h2 id="Manipulating-serialized-objects"><a href="#Manipulating-serialized-objects" class="headerlink" title="Manipulating serialized objects"></a>Manipulating serialized objects</h2><blockquote>
-<p>Exploiting some deserialization vulnerabilities can be as easy as changing an attribute in a serialized object.</p>
-</blockquote>
-<p>emmm,第一步：改变属性值。有两种方法可以去利用序列化了的对象：其一，直接编辑 byte stream ；其二，用相应的语言写个脚本，自己创建并序列化一个新对象，这种方法在处理二进制序列化格式时更方便。</p>
-<h3 id="Modifying-object-attributes"><a href="#Modifying-object-attributes" class="headerlink" title="Modifying object attributes"></a>Modifying object attributes</h3><blockquote>
-<p>When tampering with the data, as long as the attacker preserves a valid serialized object, the deserialization process will create a server-side object with the modified attribute values.<br>![[Pasted image 20240227210632.png]]<br>?? 这么简单的吗？</p>
-</blockquote>
-<p>并不是，还需要一个条件：”website uses this cookie to check whether the current user has access to certain administrative functionality.”emmm，真的会有人这样做吗？</p>
-<blockquote>
-<p>“This simple scenario is not common in the wild.”看来大家都有共识XD</p>
-</blockquote>
-<h4 id="LAB-Modifying-serialized-objects"><a href="#LAB-Modifying-serialized-objects" class="headerlink" title="LAB: Modifying serialized objects"></a>LAB: Modifying serialized objects</h4><blockquote>
-<p>扬帆起航！</p>
-</blockquote>
-<ol>
-<li>刚开始看了几个包，没头绪，看不到任何byte stream。</li>
-<li>看了返回的包后，想起cookie了，发现很像base64，传去decoder，一切就顺理成章起来</li>
-<li>emmm ，改错了，弱智了，得在request里改，整成在response里改了</li>
-<li>成功出现admin panel</li>
-<li>但是并没有完，修改了request包中的字段，浏览器发的cookie还是原来的，还得改浏览器中的cookie</li>
-<li>F12 在application栏中修改cookie即可</li>
-</ol>
-<h3 id="Modifying-data-types"><a href="#Modifying-data-types" class="headerlink" title="Modifying data types"></a>Modifying data types</h3><p>不仅可以修改object的属性值，也可以利用预期之外的数据类型。</p>
-<p>这里提到，PHP-based logic 尤其易受影响。因为php的比较运算符<code>==</code>在比较不同数据类型时判定得很宽松。emmm，我好像在那个meme上看到过，有点印象，是JavaScript还是PHP来着？</p>
-<p>以数字开头的字符串也适用于<code>5 == &quot;5&quot;</code>这一点，PHP会把整个字符串转换成开头得数字，同时忽略其他部分。<code>5 == &quot;5 of something&quot;</code></p>
-<blockquote>
-<p>This becomes even stranger when comparing a string the integer <code>0</code>:</p>
-<p><code>0 == &quot;Example string&quot; // true // wtf?</code></p>
-</blockquote>
-<blockquote>
-<p>“ Because there is no number, that is, 0 numerals in the string. PHP treats this entire string as the integer <code>0</code>.”</p>
-<p>emmm,很难评价</p>
-</blockquote>
-<p>因此在面对如下代码时</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$login</span> = <span class="title function_ invoke__">unserialize</span>(<span class="variable">$_COOKIE</span>) </span><br><span class="line"><span class="keyword">if</span> (<span class="variable">$login</span>[<span class="string">&#x27;password&#x27;</span>] == <span class="variable">$password</span>) &#123; </span><br><span class="line"><span class="comment">// log in successfully </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以使用这一性质”enabling an authentication bypass.“但也是有条件的：</p>
-<blockquote>
-<p>Note that this is only possible because deserialization preserves the data type. If the code fetched the password from the request directly, the <code>0</code> would be converted to a string and the condition would evaluate to <code>false</code>.</p>
-</blockquote>
-<p>而且要记得更新type labels 和 length indicators：</p>
-<blockquote>
-<p>Be aware that when modifying data types in any serialized object format, it is important to remember to update any type labels and length indicators in the serialized data too. Otherwise, the serialized object will be corrupted and will not be deserialized.</p>
-</blockquote>
-<p>这里它还推荐了一个扩展：Hackvertor ， 在处理二进制数据时，可以把序列化的数据格式化成字符串，并自动更新二进制数据，调整偏移量。</p>
-<h4 id="LAB-Modifying-serialized-data-types"><a href="#LAB-Modifying-serialized-data-types" class="headerlink" title="LAB : Modifying serialized data types"></a>LAB : Modifying serialized data types</h4>
+          <p>Portswigger Web Academic 真的顶！</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/02/27/Notes/Insecure%20Deserialization/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
