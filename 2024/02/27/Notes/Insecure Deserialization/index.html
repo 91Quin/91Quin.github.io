@@ -29,7 +29,7 @@
 <meta property="og:description" content="Portswigger Web Academic 真的顶！">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-02-26T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-03-03T15:24:08.888Z">
+<meta property="article:modified_time" content="2024-03-04T14:02:14.974Z">
 <meta property="article:author" content="张一剑">
 <meta property="article:tag" content="知识&#x2F;cybersecurity">
 <meta property="article:tag" content="Web">
@@ -185,7 +185,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-03-03 23:24:08" itemprop="dateModified" datetime="2024-03-03T23:24:08+08:00">2024-03-03</time>
+                <time title="修改时间：2024-03-04 22:02:14" itemprop="dateModified" datetime="2024-03-04T22:02:14+08:00">2024-03-04</time>
               </span>
 
           
@@ -339,7 +339,73 @@
 <li>总归还是因为不懂php，不懂前端。</li>
 <li><code>O:14:&quot;CustomTemplate&quot;:1:&#123;s:14:&quot;lock_file_path&quot;;s:23:&quot;/home/carlos/morale.txt&quot;;&#125;</code>其中<code>O:14:</code>是因为类名CustomTemplate长度为14，后边的参数1是因为只有一项属性</li>
 </ol>
-<h2 id="Gadget-chains"><a href="#Gadget-chains" class="headerlink" title="Gadget chains"></a>Gadget chains</h2>
+<h2 id="Gadget-chains"><a href="#Gadget-chains" class="headerlink" title="Gadget chains"></a>Gadget chains</h2><blockquote>
+<p>A “gadget” is a snippet of code that exists in the application that can help an attacker to achieve a particular goal.</p>
+</blockquote>
+<p> 我原本还以为是什么工具，没想到是application里自带的。</p>
+<blockquote>
+<p>However, the attacker’s goal might simply be to invoke a method that will pass their input into another gadget.</p>
+</blockquote>
+<p> 所以是“Gadget chains”是吧？</p>
+<blockquote>
+<p>By chaining multiple gadgets together in this way, an attacker can potentially pass their input into a dangerous “sink gadget”, where it can cause maximum damage.</p>
+</blockquote>
+<p> 但是这是怎么做到的呢？这里它还提醒：gadget chain 不是攻击者传过来的payload，它们本身就在website里的。攻击者只是控制传给gadget chain的数据。通常，使用反序列化过程当中的magic method实现，有时被叫做“kick-of gadget”。</p>
+<blockquote>
+<p>In the wild, many insecure deserialization vulnerabilities will only be exploitable through the use of gadget chains.</p>
+</blockquote>
+<p>可能只需要一两步chian，但是想实现更严重的攻击就可能得要“a more elaborate sequence of object instantiations and method invocations.”</p>
+<p>在利用反序列化漏洞时，构建gadget chains是关键技能之一。</p>
+<h3 id="Working-with-pre-built-gadget-chains"><a href="#Working-with-pre-built-gadget-chains" class="headerlink" title="Working with pre-built gadget chains"></a>Working with pre-built gadget chains</h3><p>人工地去辨认gadget chains会非常困难，没源码时更是几乎不可能。</p>
+<p>这里提到“pre-built gadget chains”。有很多工具 ，可以提供一系列在其它网站上成功利用，已经被发现的chains。就算得不到源码，也能用这些工具很方便地去辨别，利用反序列化漏洞。</p>
+<blockquote>
+<p>This approach is made possible due to the widespread use of libraries that contain exploitable gadget chains.</p>
+</blockquote>
+<p>这让我想起了log4j2和webp的洞（也许后者更为恰当）。</p>
+<blockquote>
+<p>For example, if a gadget chain in Java’s Apache Commons Collections library can be exploited …… balabala </p>
+</blockquote>
+<p>emmm，lib安全很重要。🤔这算不算供应链安全？算<a target="_blank" rel="noopener" href="https://www.redhat.com/zh/topics/security/what-is-software-supply-chain-security">什么是软件供应链安全防护？</a></p>
+<h4 id="ysoserial"><a href="#ysoserial" class="headerlink" title="ysoserial"></a>ysoserial</h4><p>给出了一个工具。选个目标web用的lib，就可以传入你想执行的代码。”but it is considerably less labor-intensive than constructing your own gadget chains manually.“咱也不知道咋构建。</p>
+<blockquote>
+<h4 id="Note"><a href="#Note" class="headerlink" title="Note"></a>Note</h4><p> In Java versions 16 and above, you need to set a series of command-line arguments for Java to run ysoserial. 然后给出了一些命令。我不确定这篇文章是否足够新，不放了。</p>
+</blockquote>
+<blockquote>
+<p>you can use the following ones to help you quickly detect insecure deserialization on virtually any server:</p>
+</blockquote>
+<ul>
+<li>The <code>URLDNS</code> chain triggers a DNS lookup for a supplied URL.同时由于它不依赖于目标应用所用的library，并且可以运行在任何Java版本上。用来detection是最普适的。</li>
+<li><code>JRMPClient</code> is another universal chain that you can use for initial detection.通过建立TCP连接。</li>
+<li><ol>
+<li>Note that you need to provide a raw IP address rather than a hostname.</li>
+</ol>
+</li>
+<li><ol start="2">
+<li> This chain may be useful in environments where all outbound traffic is firewalled, including DNS lookups.</li>
+</ol>
+</li>
+<li>You can try generating payloads with two different IP addresses: a local one and a firewalled, external one. If the application responds immediately for a payload with a local address, but hangs for a payload with an external address, causing a delay in the response, this indicates that the gadget chain worked because the server tried to connect to the firewalled address. In this case, the subtle time difference in responses can help you to detect whether deserialization occurs on the server, even in blind cases.介玩法也太tm高阶了。</li>
+</ul>
+<h4 id="Lab-Exploiting-Java-deserialization-with-Apache-Commons"><a href="#Lab-Exploiting-Java-deserialization-with-Apache-Commons" class="headerlink" title="Lab: Exploiting Java deserialization with Apache Commons"></a>Lab: Exploiting Java deserialization with Apache Commons</h4><p> ”loads the Apache Commons Collections library.“”you can still exploit this lab using pre-built gadget chains“<br> 1. 没什么头绪，工具看来需要指定payload，我决定先用<code>urldns</code>试下<br> 2. 这里毫无头绪直接看了solution<br> 3. 题解：<br> 4. 先登陆账户，然后把个request包送去repeater<br> 5. In Java versions 16 and above: </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">java -jar ysoserial-all.jar \ </span><br><span class="line">--add-opens=java.xml/com.sun.org.apache.xalan.internal.xsltc.trax=ALL-UNNAMED \ --add-opens=java.xml/com.sun.org.apache.xalan.internal.xsltc.runtime=ALL-UNNAMED \ --add-opens=java.base/java.net=ALL-UNNAMED \ --add-opens=java.base/java.util=ALL-UNNAMED \ CommonsCollections4 <span class="string">&#x27;rm /home/carlos/morale.txt&#x27;</span> | <span class="built_in">base64</span></span><br></pre></td></tr></table></figure>
+<ol start="6">
+<li>这里不是很清楚，为什么payload选用<code>CommonsCollections4</code>也没有哪个教程指出<blockquote>
+<p><a target="_blank" rel="noopener" href="https://wooyun.js.org/drops/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%B7%A5%E5%85%B7ysoserial%E5%88%86%E6%9E%90.html">https://wooyun.js.org/drops/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%B7%A5%E5%85%B7ysoserial%E5%88%86%E6%9E%90.html</a> 很遗憾，这是篇wooyun上的文章的archive，只能说ysoserial真的是很老了。</p>
+</blockquote>
+</li>
+<li>而且这个gadget chains很老，也没有更新，只能在Java15之下的版本运行。我暂且使用<code>archlinux-java set java-11-openjdk</code>来改变Java版本</li>
+<li>而且要将base64编码转为URL编码</li>
+<li>😔做得云里雾里</li>
+</ol>
+<h4 id="PHP-Generic-Gadget-Chains"><a href="#PHP-Generic-Gadget-Chains" class="headerlink" title="PHP Generic Gadget Chains"></a>PHP Generic Gadget Chains</h4><p>提到了proof-of-concept tools ： “PHP Generic Gadget Chains” (PHPGGC).</p>
+<p>它又强调了一遍说，漏洞还是因为用户可控数据的反序列化导致的，不要怪罪到gadget chains或者libs头上。就算把所有的gadget chain都堵上，不控制这些不可信数据的反序列化过程，也是无济于事。</p>
+<h4 id="Lab-Exploiting-PHP-deserialization-with-a-pre-built-gadget-chain"><a href="#Lab-Exploiting-PHP-deserialization-with-a-pre-built-gadget-chain" class="headerlink" title="Lab: Exploiting PHP deserialization with a pre-built gadget chain"></a>Lab: Exploiting PHP deserialization with a pre-built gadget chain</h4><ol>
+<li>phpggc要求php版本大于等于5.6 ，clone下来跑就可以了</li>
+<li>那么问题又来了，how to identify the target framework?</li>
+<li>ok,看response时发现有一行是注释过的，成功在<code>/cgi-bin/phpinfo.php</code>弹出php信息。接下来就是找了。</li>
+<li>翻来覆去不明白，看了眼题解，明白了，超出我的知识储备了已经。序列化的数据中还需要使用SHA-1签名。</li>
+</ol>
+
     </div>
 
     
@@ -422,7 +488,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Insecure-deserialization"><span class="nav-number">1.</span> <span class="nav-text">Insecure deserialization</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-serialization"><span class="nav-number">1.1.</span> <span class="nav-text">What is serialization?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Serialization-vs-deserialization"><span class="nav-number">1.1.1.</span> <span class="nav-text">Serialization vs deserialization</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-insecure-deserialization"><span class="nav-number">1.2.</span> <span class="nav-text">What is insecure deserialization?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-do-insecure-deserialization-vulnerabilities-arise"><span class="nav-number">1.3.</span> <span class="nav-text">How do insecure deserialization vulnerabilities arise?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-the-impact-of-insecure-deserialization"><span class="nav-number">1.4.</span> <span class="nav-text">What is the impact of insecure deserialization?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Exploiting-insecure-deserialization-vulnerabilities"><span class="nav-number">2.</span> <span class="nav-text">Exploiting insecure deserialization vulnerabilities</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-identify-insecure-deserialization"><span class="nav-number">2.1.</span> <span class="nav-text">How to identify insecure deserialization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PHP-serialization-format"><span class="nav-number">2.1.1.</span> <span class="nav-text">PHP serialization format</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-serialization-format"><span class="nav-number">2.1.2.</span> <span class="nav-text">Java serialization format</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Manipulating-serialized-objects"><span class="nav-number">2.2.</span> <span class="nav-text">Manipulating serialized objects</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Modifying-object-attributes"><span class="nav-number">2.2.1.</span> <span class="nav-text">Modifying object attributes</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LAB-Modifying-serialized-objects"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">LAB: Modifying serialized objects</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Modifying-data-types"><span class="nav-number">2.2.2.</span> <span class="nav-text">Modifying data types</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LAB-Modifying-serialized-data-types"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">LAB : Modifying serialized data types</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-application-functionality"><span class="nav-number">2.3.</span> <span class="nav-text">Using application functionality</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LAB-Using-application-functionality-to-exploit-insecure-deserialization"><span class="nav-number">2.3.0.1.</span> <span class="nav-text">LAB: Using application functionality to exploit insecure deserialization</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Magic-methods"><span class="nav-number">2.4.</span> <span class="nav-text">Magic methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Injecting-arbitrary-objects"><span class="nav-number">2.5.</span> <span class="nav-text">Injecting arbitrary objects</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-Arbitrary-object-injection-in-PHP"><span class="nav-number">2.5.0.1.</span> <span class="nav-text">Lab: Arbitrary object injection in PHP</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gadget-chains"><span class="nav-number">2.6.</span> <span class="nav-text">Gadget chains</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Insecure-deserialization"><span class="nav-number">1.</span> <span class="nav-text">Insecure deserialization</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-serialization"><span class="nav-number">1.1.</span> <span class="nav-text">What is serialization?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Serialization-vs-deserialization"><span class="nav-number">1.1.1.</span> <span class="nav-text">Serialization vs deserialization</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-insecure-deserialization"><span class="nav-number">1.2.</span> <span class="nav-text">What is insecure deserialization?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-do-insecure-deserialization-vulnerabilities-arise"><span class="nav-number">1.3.</span> <span class="nav-text">How do insecure deserialization vulnerabilities arise?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-the-impact-of-insecure-deserialization"><span class="nav-number">1.4.</span> <span class="nav-text">What is the impact of insecure deserialization?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Exploiting-insecure-deserialization-vulnerabilities"><span class="nav-number">2.</span> <span class="nav-text">Exploiting insecure deserialization vulnerabilities</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-identify-insecure-deserialization"><span class="nav-number">2.1.</span> <span class="nav-text">How to identify insecure deserialization</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PHP-serialization-format"><span class="nav-number">2.1.1.</span> <span class="nav-text">PHP serialization format</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-serialization-format"><span class="nav-number">2.1.2.</span> <span class="nav-text">Java serialization format</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Manipulating-serialized-objects"><span class="nav-number">2.2.</span> <span class="nav-text">Manipulating serialized objects</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Modifying-object-attributes"><span class="nav-number">2.2.1.</span> <span class="nav-text">Modifying object attributes</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LAB-Modifying-serialized-objects"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">LAB: Modifying serialized objects</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Modifying-data-types"><span class="nav-number">2.2.2.</span> <span class="nav-text">Modifying data types</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LAB-Modifying-serialized-data-types"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">LAB : Modifying serialized data types</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-application-functionality"><span class="nav-number">2.3.</span> <span class="nav-text">Using application functionality</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LAB-Using-application-functionality-to-exploit-insecure-deserialization"><span class="nav-number">2.3.0.1.</span> <span class="nav-text">LAB: Using application functionality to exploit insecure deserialization</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Magic-methods"><span class="nav-number">2.4.</span> <span class="nav-text">Magic methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Injecting-arbitrary-objects"><span class="nav-number">2.5.</span> <span class="nav-text">Injecting arbitrary objects</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-Arbitrary-object-injection-in-PHP"><span class="nav-number">2.5.0.1.</span> <span class="nav-text">Lab: Arbitrary object injection in PHP</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Gadget-chains"><span class="nav-number">2.6.</span> <span class="nav-text">Gadget chains</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Working-with-pre-built-gadget-chains"><span class="nav-number">2.6.1.</span> <span class="nav-text">Working with pre-built gadget chains</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#ysoserial"><span class="nav-number">2.6.1.1.</span> <span class="nav-text">ysoserial</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Note"><span class="nav-number">2.6.1.2.</span> <span class="nav-text">Note</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-Exploiting-Java-deserialization-with-Apache-Commons"><span class="nav-number">2.6.1.3.</span> <span class="nav-text">Lab: Exploiting Java deserialization with Apache Commons</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PHP-Generic-Gadget-Chains"><span class="nav-number">2.6.1.4.</span> <span class="nav-text">PHP Generic Gadget Chains</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-Exploiting-PHP-deserialization-with-a-pre-built-gadget-chain"><span class="nav-number">2.6.1.5.</span> <span class="nav-text">Lab: Exploiting PHP deserialization with a pre-built gadget chain</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
