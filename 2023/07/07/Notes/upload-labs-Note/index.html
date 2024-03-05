@@ -28,26 +28,14 @@
 <meta property="og:site_name" content="人生边上">
 <meta property="og:description" content="我深知，世间有些路非要自己去面对，自己去跋涉的。只要有目标，即使路再长再远，山再艰再险，也得咬紧牙关走下去。 《温家宝地质笔记》">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071041057.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307070936579.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071046589.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071114863.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071117043.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071119732.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071448212.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071450228.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071514215.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071519752.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071529649.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071530415.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071530642.png">
 <meta property="article:published_time" content="2023-07-07T01:21:13.000Z">
-<meta property="article:modified_time" content="2024-02-05T13:22:28.930Z">
+<meta property="article:modified_time" content="2024-03-05T08:26:47.183Z">
 <meta property="article:author" content="张一剑">
+<meta property="article:tag" content="知识&#x2F;cybersecurity">
 <meta property="article:tag" content="Web">
 <meta property="article:tag" content="upload">
+<meta property="article:tag" content="文件上传">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071041057.png">
 
 <link rel="canonical" href="https://zhangyijian.cn/2023/07/07/Notes/upload-labs-Note/">
 
@@ -197,7 +185,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-02-05 21:22:28" itemprop="dateModified" datetime="2024-02-05T21:22:28+08:00">2024-02-05</time>
+                <time title="修改时间：2024-03-05 16:26:47" itemprop="dateModified" datetime="2024-03-05T16:26:47+08:00">2024-03-05</time>
               </span>
 
           
@@ -216,36 +204,12 @@
 <span id="more"></span>
 <!-- [文件上传漏洞详解](https://www.freebuf.com/vuls/279171.html)
 ![](https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071032623.png) -->
-<h2 id="Portswigger-File-upload-vulnerabilities"><a href="#Portswigger-File-upload-vulnerabilities" class="headerlink" title="Portswigger File upload vulnerabilities"></a><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/file-upload">Portswigger File upload vulnerabilities</a></h2><h3 id="Lab-Remote-code-execution-via-web-shell-upload"><a href="#Lab-Remote-code-execution-via-web-shell-upload" class="headerlink" title="Lab: Remote code execution via web shell upload"></a>Lab: Remote code execution via web shell upload</h3><p>目标是”upload a basic PHP web shell and use it to exfiltrate the contents of the file <code>/home/carlos/secret</code>“。因为没有做任何安全措施，所以使用教程中列举的函数，依葫芦画瓢即可。</p>
-<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span> <span class="keyword">echo</span> <span class="title function_ invoke__">file_get_contents</span>(<span class="string">&#x27;/home/carlos/secret&#x27;</span>); <span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-<p><a target="_blank" rel="noopener" href="https://syunaht.com/p/1006188223.html">burpsuite 无法抓127.0.0.1的包</a><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071041057.png"></p>
-<h3 id="pass01"><a href="#pass01" class="headerlink" title="pass01"></a>pass01</h3><p>第一关就G，修改js元素后页面并没有改变。搜索后发现：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/30701118">知乎</a></li>
-<li><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/6657229/how-can-i-edit-javascript-in-my-browser-like-i-can-use-firebug-to-edit-css-html">stackoverflow</a><br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307070936579.png"><blockquote>
-<p>在这个回答中提到了Fiddler，这也是个抓包软件。好像不如Burpsuite功能多，但是它free。</p>
-</blockquote>
-<p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071046589.png"><br>很激动！</p>
-</li>
-</ul>
-<h3 id="pass02"><a href="#pass02" class="headerlink" title="pass02"></a>pass02</h3><h4 id="MIME"><a href="#MIME" class="headerlink" title="MIME"></a>MIME</h4><ul>
-<li><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%A4%9A%E7%94%A8%E9%80%94%E4%BA%92%E8%81%AF%E7%B6%B2%E9%83%B5%E4%BB%B6%E6%93%B4%E5%B1%95">https://zh.wikipedia.org/wiki/%E5%A4%9A%E7%94%A8%E9%80%94%E4%BA%92%E8%81%AF%E7%B6%B2%E9%83%B5%E4%BB%B6%E6%93%B4%E5%B1%95</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.runoob.com/http/mime-types.html">https://www.runoob.com/http/mime-types.html</a><blockquote>
-<p>“<em>MIME是通过标准化电子邮件报文的头部的附加域（fields）而实现的；这些头部的附加域，描述新的报文类型的内容和组织形式。</em>“</p>
-</blockquote>
-<p>emmmm，看到这个我想是不是可以通过burp修改报头？<br>没错，正是这样。<img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071114863.png"><br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071117043.png"><br>图中荧光笔覆盖标头即为server用于检查的标头。修改为</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Content-Type: image/gif</span><br></pre></td></tr></table></figure>
-<p>即可。注意<img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071119732.png"><br>emmmm，<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/5147049/image-pjpeg-and-image-jpeg">似乎没什么影响</a>。我用”image&#x2F;jpeg”传了一遍，没啥障碍。</p>
-</li>
-</ul>
-<h3 id="pass03"><a href="#pass03" class="headerlink" title="pass03"></a>pass03</h3><h4 id="黑名单过滤"><a href="#黑名单过滤" class="headerlink" title="黑名单过滤"></a>黑名单过滤</h4><p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071448212.png"><br>限制了文件名，类似pass1，不过pass1是白名单，而且是在前端使用js做检查。<br><a target="_blank" rel="noopener" href="https://isbase.cc/tip/web/fileupload/part1.html">文件上传漏洞限制绕过总结</a><br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071450228.png"><br>这个题改大小写是不行的。后缀改成.pht即可。我在这一题上传后文件名会改变，蚁剑连不上。<img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071514215.png"><br>额，讲课的这哥们的文档里甚至有<img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071519752.png"><br><a target="_blank" rel="noopener" href="https://www.cnblogs.com/confidant/p/15313397.html">在这里</a>讲得很详细。<img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071529649.png"><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071530415.png"><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071530642.png">但法二只有Windows能用</p>
 <blockquote>
-<p>“<em>这个绕过方法只适用于windows系统，在window的时候如果文件名+”::$DATA会把::$DATA之后的数据当成文件流处理,不会检测后缀名，且保持::$DATA之前的文件名，他的目的就是不检查后缀名</em>“</p>
+<p>2024年3月5日，这篇文章去年丢过一次后就只在本地写了，也没有更新上来。趁此次准备复试的机会，逐步将这篇文章整理，更新。原残篇放在文章结尾的代码块中。</p>
 </blockquote>
-<p>所以说还是得改apache。</p>
-
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="section">## [<span class="string">Portswigger File upload vulnerabilities</span>](<span class="link">https://portswigger.net/web-security/file-upload</span>)</span></span><br><span class="line"><span class="section">### Lab: Remote code execution via web shell upload</span></span><br><span class="line">目标是”upload a basic PHP web shell and use it to exfiltrate the contents of the file <span class="code">`/home/carlos/secret`</span>“。因为没有做任何安全措施，所以使用教程中列举的函数，依葫芦画瓢即可。</span><br><span class="line"><span class="code">```php</span></span><br><span class="line"><span class="code">&lt;?php echo file_get_contents(&#x27;/home/carlos/secret&#x27;); ?&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">[<span class="string">burpsuite 无法抓127.0.0.1的包</span>](<span class="link">https://syunaht.com/p/1006188223.html</span>)![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071041057.png</span>)</span><br><span class="line"><span class="section">### pass01</span></span><br><span class="line">第一关就G，修改js元素后页面并没有改变。搜索后发现：</span><br><span class="line"><span class="bullet">*</span> [<span class="string">知乎</span>](<span class="link">https://www.zhihu.com/question/30701118</span>)</span><br><span class="line"><span class="bullet">*</span> [<span class="string">stackoverflow</span>](<span class="link">https://stackoverflow.com/questions/6657229/how-can-i-edit-javascript-in-my-browser-like-i-can-use-firebug-to-edit-css-html</span>)</span><br><span class="line">![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307070936579.png</span>)</span><br><span class="line"><span class="quote">&gt; 在这个回答中提到了Fiddler，这也是个抓包软件。好像不如Burpsuite功能多，但是它free。</span></span><br><span class="line"><span class="quote">&gt;</span></span><br><span class="line"><span class="quote">![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071046589.png</span>)</span></span><br><span class="line">很激动！</span><br><span class="line"><span class="section">### pass02</span></span><br><span class="line"><span class="section">#### MIME</span></span><br><span class="line"><span class="bullet">*</span> https://zh.wikipedia.org/wiki/%E5%A4%9A%E7%94%A8%E9%80%94%E4%BA%92%E8%81%AF%E7%B6%B2%E9%83%B5%E4%BB%B6%E6%93%B4%E5%B1%95</span><br><span class="line"><span class="bullet">*</span> https://www.runoob.com/http/mime-types.html</span><br><span class="line"><span class="quote">&gt; &quot;<span class="emphasis">*MIME是通过标准化电子邮件报文的头部的附加域（fields）而实现的；这些头部的附加域，描述新的报文类型的内容和组织形式。*</span>&quot;</span></span><br><span class="line"><span class="quote">&gt;</span></span><br><span class="line"><span class="quote">emmmm，看到这个我想是不是可以通过burp修改报头？</span></span><br><span class="line">没错，正是这样。![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071114863.png</span>)</span><br><span class="line">![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071117043.png</span>)</span><br><span class="line">图中荧光笔覆盖标头即为server用于检查的标头。修改为</span><br><span class="line"><span class="code">```html</span></span><br><span class="line"><span class="code">Content-Type: image/gif</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">即可。注意![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071119732.png</span>)</span><br><span class="line">emmmm，[<span class="string">似乎没什么影响</span>](<span class="link">https://stackoverflow.com/questions/5147049/image-pjpeg-and-image-jpeg</span>)。我用&quot;image/jpeg&quot;传了一遍，没啥障碍。</span><br><span class="line"><span class="section">### pass03</span></span><br><span class="line"><span class="section">#### 黑名单过滤</span></span><br><span class="line">![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071448212.png</span>)</span><br><span class="line">限制了文件名，类似pass1，不过pass1是白名单，而且是在前端使用js做检查。</span><br><span class="line">[<span class="string">文件上传漏洞限制绕过总结</span>](<span class="link">https://isbase.cc/tip/web/fileupload/part1.html</span>)</span><br><span class="line">![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071450228.png</span>)</span><br><span class="line">这个题改大小写是不行的。后缀改成.pht即可。我在这一题上传后文件名会改变，蚁剑连不上。![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071514215.png</span>)</span><br><span class="line">额，讲课的这哥们的文档里甚至有![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071519752.png</span>)</span><br><span class="line">[<span class="string">在这里</span>](<span class="link">https://www.cnblogs.com/confidant/p/15313397.html</span>)讲得很详细。![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071529649.png</span>)![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071530415.png</span>)![](<span class="link">https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202307071530642.png</span>)但法二只有Windows能用</span><br><span class="line"><span class="quote">&gt; &quot;<span class="emphasis">*这个绕过方法只适用于windows系统，在window的时候如果文件名+&quot;::$DATA会把::$DATA之后的数据当成文件流处理,不会检测后缀名，且保持::$DATA之前的文件名，他的目的就是不检查后缀名*</span>&quot;</span></span><br><span class="line"><span class="quote">&gt;</span></span><br><span class="line"><span class="quote">所以说还是得改apache。</span></span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -254,8 +218,10 @@
 
       <footer class="post-footer">
           <div class="post-tags">
+              <a href="/tags/%E7%9F%A5%E8%AF%86-cybersecurity/" rel="tag"># 知识/cybersecurity</a>
               <a href="/tags/Web/" rel="tag"># Web</a>
               <a href="/tags/upload/" rel="tag"># upload</a>
+              <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/" rel="tag"># 文件上传</a>
           </div>
 
         
@@ -329,7 +295,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Portswigger-File-upload-vulnerabilities"><span class="nav-number">1.</span> <span class="nav-text">Portswigger File upload vulnerabilities</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lab-Remote-code-execution-via-web-shell-upload"><span class="nav-number">1.1.</span> <span class="nav-text">Lab: Remote code execution via web shell upload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pass01"><span class="nav-number">1.2.</span> <span class="nav-text">pass01</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pass02"><span class="nav-number">1.3.</span> <span class="nav-text">pass02</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#MIME"><span class="nav-number">1.3.1.</span> <span class="nav-text">MIME</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pass03"><span class="nav-number">1.4.</span> <span class="nav-text">pass03</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%90%8D%E5%8D%95%E8%BF%87%E6%BB%A4"><span class="nav-number">1.4.1.</span> <span class="nav-text">黑名单过滤</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -348,7 +313,7 @@
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-count">21</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
