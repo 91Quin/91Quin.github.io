@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="code-nXJP22I4Cn">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangyijian.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":"mac","style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="我有一个梦想，高山下降，幽谷上升，坎坷曲折之路成坦途。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RTL-SDR开发">
+<meta property="og:url" content="https://zhangyijian.cn/Notes/SDR/index.html">
+<meta property="og:site_name" content="人生边上">
+<meta property="og:description" content="我有一个梦想，高山下降，幽谷上升，坎坷曲折之路成坦途。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-01-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-01-08T13:13:47.890Z">
+<meta property="article:author" content="张一剑">
+<meta property="article:tag" content="知识">
+<meta property="article:tag" content="知识&#x2F;无线电">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhangyijian.cn/Notes/SDR/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>RTL-SDR开发 | 人生边上</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">人生边上</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhangyijian.cn/Notes/SDR/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="张一剑">
+      <meta itemprop="description" content="Just for fun :D">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="人生边上">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RTL-SDR开发
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-01-05 00:00:00" itemprop="dateCreated datePublished" datetime="2024-01-05T00:00:00+08:00">2024-01-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-01-08 21:13:47" itemprop="dateModified" datetime="2024-01-08T21:13:47+08:00">2024-01-08</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>我有一个梦想，高山下降，幽谷上升，坎坷曲折之路成坦途。</p>
+<span id="more"></span>
+<p>每每看软件无线电都很兴奋，太戳我了。某一天突然有个想法，想用SDR搭建一套借助网络的中继台。这样不也算是通联全世界了？woc，当时就被自己的想法折服了。后来一看wiki，原来早就有<a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Amateur_radio_repeater#Internet_linking">借助VoIP的中继软件</a>了。（甚至还有Radio over IP）原来我不是第一个这么想的，有点高兴也有点沮丧。</p>
+<p>Anyway，我还是打算利用业余时间构建这么一个系统。<br>但是摆在我面前的首要问题是我对SDR开发一窍不通，而且我对开发一个c、python或是go（我打算用这三种语言之一来完成这个项目）的项目一无所知。相对于艰苦的努力并取得一点进步来说，没有方向很明显也很让人难受，甚至更让人难受。</p>
+<p>在经历了一些信息的检索后，我终于找到了<a target="_blank" rel="noopener" href="https://blog.csdn.net/shukebeta008/category_11881473.html">老邵的开源世界 TEMPEST HDMI泄露接受</a>，up使用了pyrtlsdr这个包，它封装了rtlsdr的驱动。找到了一点方向。但是哥们搁这儿坐着选电烙铁的时候（是的，电烙铁也很让我兴奋。特别是，现在整个市场跟我高中那时候t12还占据主流不大一样。现在大家都开始用210，245了，而且现在也有了卖t12的商家，百花齐放可以说是。pd诱骗功率也比以前大的多，便携式电烙铁都有干到150W的，老性感了。再顺便一提，现在18650电池市场也老繁荣了，特斯拉拆下来的，亿纬，东磁啥的，自组电池包的也老些了。不过自组电池包这个，哥们真没什么想法。怕给自己搭进去。）</p>
+<p>回到正题，哥们搁这儿选购焊台的时候，突然想到为什么不问一问万能的<del>土豆</del>ChatGpt呢？虽然GPT基于中文互联网的回答不大行（不是它的锅），但是用英文问它的时候很多答案还是很棒的。它给我了如下回答：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Hello, this is Bing. I’m a chat mode of Microsoft Bing that can help you with various tasks and topics. I can also generate creative content such as poems, stories, code, and more.</span><br><span class="line"></span><br><span class="line">RTL-SDR is a software defined radio that can receive radio signals over a wide range of frequencies. You can use it to develop a Internet radio repeater, which is a device that receives a radio signal and retransmits it on another frequency. To do this, you will need some hardware and software components, such as:</span><br><span class="line"></span><br><span class="line"><span class="bullet">-</span> An RTL-SDR dongle, which is a USB device that can receive radio signals. [<span class="string">You can buy one online for around $30</span>](<span class="link">https://makezine.com/article/electronics/getting-started-with-software-defined-radio-sdr/</span>)[<span class="string">1</span>](<span class="link">https://makezine.com/article/electronics/getting-started-with-software-defined-radio-sdr/</span>)</span><br><span class="line"><span class="bullet">-</span> An antenna, which is a device that can improve the reception and transmission of radio signals. [<span class="string">You can use the ones that come with the RTL-SDR dongle, or buy a better one for your specific frequency range</span>](<span class="link">https://austinsnerdythings.com/2021/09/11/getting-started-with-sdr-software-defined-radio-a-tutorial/</span>)[<span class="string">2</span>](<span class="link">https://austinsnerdythings.com/2021/09/11/getting-started-with-sdr-software-defined-radio-a-tutorial/</span>)</span><br><span class="line"><span class="bullet">-</span> A computer or a single board computer, such as a Raspberry Pi, which is a small and cheap device that can run Linux and Python. [<span class="string">You will need this to process the radio signals and control the RTL-SDR dongle</span>](<span class="link">https://www.rtl-sdr.com/category/tutorial/</span>)[<span class="string">3</span>](<span class="link">https://www.rtl-sdr.com/category/tutorial/</span>)</span><br><span class="line"><span class="bullet">-</span> A software program that can communicate with the RTL-SDR dongle and perform the repeater function. [<span class="string">You can write your own program in Python or C, or use an existing one</span>](<span class="link">https://www.instructables.com/Using-an-RTL-SDR-Dongle/</span>)[<span class="string">4</span>](<span class="link">https://www.instructables.com/Using-an-RTL-SDR-Dongle/</span>)[<span class="string">5</span>](<span class="link">https://www.rtl-sdr.com/developing-your-own-sdr-applications-with-python/</span>)</span><br><span class="line"></span><br><span class="line">To get started, you will need to install the drivers and software for the RTL-SDR dongle on your computer or single board computer. [<span class="string">You can follow the instructions on this website:</span>](<span class="link">https://youtu.be/HUkaIJhoYUs</span>) [<span class="string">6</span>](<span class="link">https://youtu.be/HUkaIJhoYUs</span>). Then, you will need to connect the antenna and the RTL-SDR dongle to your computer or single board computer. You can use a program called SDRSharp to test the reception and transmission of radio signals. [<span class="string">You can download it from this website:</span>](<span class="link">https://www.rtl-sdr.com/rtl-sdr-quick-start-guide/</span>) [<span class="string">7</span>](<span class="link">https://www.rtl-sdr.com/rtl-sdr-quick-start-guide/</span>).</span><br><span class="line"></span><br><span class="line">To develop your own program for the Internet radio repeater, you will need to learn how to use the RTL-SDR library, which is a set of functions that can control the RTL-SDR dongle and process the radio signals. You can use Python or C as your programming language, depending on your preference and skill level. Python is easier to learn and write, but C is faster and more efficient. You can find some tutorials and examples on how to use the RTL-SDR library in Python or C on these websites: .</span><br><span class="line"></span><br><span class="line">I hope this helps you with your project. If you have any more questions, feel free to ask me. I can also generate some code snippets for you if you want. Just tell me what you want the code to do and what language you want to use. Good luck!</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Can you show me some code examples in Python for RTL-SDR?</p>
+</blockquote>
+<p>它也是推荐用pyrtlsdr库，给出了一些它写的示例。最重要的是它给出了比较关键的信息</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.rtl-sdr.com/developing-your-own-sdr-applications-with-python/">Developing Your Own SDR Applications With Python (rtl-sdr.com)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.rtl-sdr.com/pysdr-a-free-guide-to-sdr-and-dsp-using-python/">PySDR: A (Free) Guide to SDR and DSP using Python (rtl-sdr.com)</a><blockquote>
+<p>Can you show me some code examples in C for RTL-SDR?</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>Sure, I can show you some code examples in C for RTL-SDR. RTL-SDR is a software defined radio that can receive radio signals over a wide range of frequencies. You can use it to develop various applications, such as a Internet radio repeater, which is a device that receives a radio signal and retransmits it on another frequency.</p>
+<p>To use RTL-SDR in C, you will need to install the <code>librtlsdr</code> library, which is a set of functions that can communicate with the RTL-SDR dongle and process the radio signals. You can download it from this website: .</p>
+<p>Then, you will need to include the <code>rtl-sdr.h</code> header file in your C program, and link the <code>librtlsdr</code> library when compiling. You can use the <code>rtlsdr_open</code> function to open the RTL-SDR device, and the <code>rtlsdr_close</code> function to close it. You can use the <code>rtlsdr_set_sample_rate</code>, <code>rtlsdr_set_center_freq</code>, and <code>rtlsdr_set_tuner_gain</code> functions to set the sample rate, center frequency, and gain of the RTL-SDR device, respectively. You can use the <code>rtlsdr_read_sync</code> function to read samples from the RTL-SDR device synchronously, or the <code>rtlsdr_read_async</code> function to read samples asynchronously using a callback function. You can use the <code>rtlsdr_cancel_async</code> function to stop the asynchronous reading. For more details on the functions and parameters, you can refer to the <code>rtl-sdr.h</code> header file or the documentation on the website.</p>
+<p>Here is a simple code example in C that opens the RTL-SDR device, sets the sample rate to 2.4 MHz, the center frequency to 95 MHz, and the gain to 50 dB, and reads 256*1024 samples synchronously:</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;rtl-sdr.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// Define the variables</span></span><br><span class="line">    <span class="type">int</span> device_index = <span class="number">0</span>; <span class="comment">// The index of the RTL-SDR device</span></span><br><span class="line">    <span class="type">rtlsdr_dev_t</span> *device = <span class="literal">NULL</span>; <span class="comment">// The pointer to the RTL-SDR device</span></span><br><span class="line">    <span class="type">int</span> sample_rate = <span class="number">2400000</span>; <span class="comment">// The sample rate in Hz</span></span><br><span class="line">    <span class="type">int</span> center_freq = <span class="number">95000000</span>; <span class="comment">// The center frequency in Hz</span></span><br><span class="line">    <span class="type">int</span> gain = <span class="number">500</span>; <span class="comment">// The gain in tenths of a dB</span></span><br><span class="line">    <span class="type">int</span> buffer_length = <span class="number">256</span>*<span class="number">1024</span>; <span class="comment">// The length of the buffer in bytes</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">char</span> *buffer = <span class="literal">NULL</span>; <span class="comment">// The pointer to the buffer</span></span><br><span class="line">    <span class="type">int</span> n_read = <span class="number">0</span>; <span class="comment">// The number of bytes read</span></span><br><span class="line">    <span class="type">int</span> result = <span class="number">0</span>; <span class="comment">// The result of the functions</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Open the RTL-SDR device</span></span><br><span class="line">    result = rtlsdr_open(&amp;device, device_index);</span><br><span class="line">    <span class="keyword">if</span> (result &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Failed to open the RTL-SDR device.\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set the sample rate</span></span><br><span class="line">    result = rtlsdr_set_sample_rate(device, sample_rate);</span><br><span class="line">    <span class="keyword">if</span> (result &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Failed to set the sample rate.\n&quot;</span>);</span><br><span class="line">        rtlsdr_close(device);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set the center frequency</span></span><br><span class="line">    result = rtlsdr_set_center_freq(device, center_freq);</span><br><span class="line">    <span class="keyword">if</span> (result &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Failed to set the center frequency.\n&quot;</span>);</span><br><span class="line">        rtlsdr_close(device);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set the gain</span></span><br><span class="line">    result = rtlsdr_set_tuner_gain(device, gain);</span><br><span class="line">    <span class="keyword">if</span> (result &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Failed to set the gain.\n&quot;</span>);</span><br><span class="line">        rtlsdr_close(device);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Allocate the buffer</span></span><br><span class="line">    buffer = (<span class="type">unsigned</span> <span class="type">char</span> *)<span class="built_in">malloc</span>(buffer_length * <span class="keyword">sizeof</span>(<span class="type">unsigned</span> <span class="type">char</span>));</span><br><span class="line">    <span class="keyword">if</span> (buffer == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Failed to allocate the buffer.\n&quot;</span>);</span><br><span class="line">        rtlsdr_close(device);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Read samples synchronously</span></span><br><span class="line">    result = rtlsdr_read_sync(device, buffer, buffer_length, &amp;n_read);</span><br><span class="line">    <span class="keyword">if</span> (result &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">fprintf</span>(<span class="built_in">stderr</span>, <span class="string">&quot;Failed to read samples.\n&quot;</span>);</span><br><span class="line">        <span class="built_in">free</span>(buffer);</span><br><span class="line">        rtlsdr_close(device);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Print the number of bytes read</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Read %d bytes.\n&quot;</span>, n_read);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Do something with the samples</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Free the buffer</span></span><br><span class="line">    <span class="built_in">free</span>(buffer);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Close the RTL-SDR device</span></span><br><span class="line">    rtlsdr_close(device);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>You can find more code examples and tutorials on how to use RTL-SDR in C on these websites: (不知道怎么回事这里网址并不能直接复制过来)</p>
+<p>I hope this helps you with your project. If you have any more questions, feel free to ask me. I can also generate some code snippets for you if you want. Just tell me what you want the code to do and what language you want to use. Good luck!</p>
+</blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.rtl-sdr.com/tag/c-code/">C code (rtl-sdr.com)</a><blockquote>
+<p>用c写的很简单的AIS接收器，很好地用于学习的例子</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://www.libhunt.com/l/cpp/topic/rtl-sdr">Top 13 C++ rtl-sdr Projects (Dec 2023) (libhunt.com)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.reddit.com/r/RTLSDR/comments/pucxbo/coding_for_the_rtlsdr/">RTL-SDR 编码 ： RTLSDR (reddit.com)</a><blockquote>
+<p>reddit 上有老哥曾面临和我一样的困惑，有很多人给出意见</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/shajen/rtl-sdr-scanner-cpp">GitHub - shajen&#x2F;rtl-sdr-scanner-cpp</a><blockquote>
+<p>一个用cpp完成的项目</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://osmocom.org/projects/rtl-sdr/wiki/Rtl-sdr">RTL-SDR - RTL-SDR - 开源移动通信 (osmocom.org)</a><blockquote>
+<p>详尽的文档</p>
+</blockquote>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E7%9F%A5%E8%AF%86/" rel="tag"><i class="fa fa-tag"></i> 知识</a>
+              <a href="/tags/%E7%9F%A5%E8%AF%86-%E6%97%A0%E7%BA%BF%E7%94%B5/" rel="tag"><i class="fa fa-tag"></i> 知识/无线电</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Notes/%E5%AE%89%E5%85%A8%E5%A4%9A%E6%96%B9%E8%AE%A1%E7%AE%97/" rel="prev" title="安全多方计算">
+      <i class="fa fa-chevron-left"></i> 安全多方计算
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Notes/%E6%96%87%E7%8C%AE%E9%98%85%E8%AF%BB/" rel="next" title="读论文">
+      读论文 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">张一剑</p>
+  <div class="site-description" itemprop="description">Just for fun :D</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/91Quin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;91Quin" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:YijianCS@outlook.com" title="E-Mail → mailto:YijianCS@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">鲁ICP备2021011592号-1 </a>
+      <img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403011809721.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=37020202001534" rel="noopener" target="_blank">鲁公网安备37020202001534号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张一剑</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'default',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+</body>
+</html>

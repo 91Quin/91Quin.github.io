@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="baidu-site-verification" content="code-nXJP22I4Cn">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhangyijian.cn","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":"mac","style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="唔，头要裂开了，感觉要长脑子了😣">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安全多方计算">
+<meta property="og:url" content="https://zhangyijian.cn/Notes/%E5%AE%89%E5%85%A8%E5%A4%9A%E6%96%B9%E8%AE%A1%E7%AE%97/index.html">
+<meta property="og:site_name" content="人生边上">
+<meta property="og:description" content="唔，头要裂开了，感觉要长脑子了😣">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021359384.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021424195.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021425736.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021426644.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021428825.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021433516.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021437160.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021445446.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021607856.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021610707.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021616911.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021618686.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021624388.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021624554.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021625539.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021628579.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021630992.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021632399.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021634380.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021639130.png">
+<meta property="article:published_time" content="2023-12-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-09T15:02:14.072Z">
+<meta property="article:author" content="张一剑">
+<meta property="article:tag" content="知识&#x2F;linux&#x2F;毕业设计">
+<meta property="article:tag" content="知识&#x2F;安全多方计算">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021359384.jpg">
+
+<link rel="canonical" href="https://zhangyijian.cn/Notes/%E5%AE%89%E5%85%A8%E5%A4%9A%E6%96%B9%E8%AE%A1%E7%AE%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>安全多方计算 | 人生边上</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">人生边上</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhangyijian.cn/Notes/%E5%AE%89%E5%85%A8%E5%A4%9A%E6%96%B9%E8%AE%A1%E7%AE%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="张一剑">
+      <meta itemprop="description" content="Just for fun :D">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="人生边上">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          安全多方计算
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2023-12-28 00:00:00" itemprop="dateCreated datePublished" datetime="2023-12-28T00:00:00+08:00">2023-12-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-09 23:02:14" itemprop="dateModified" datetime="2024-03-09T23:02:14+08:00">2024-03-09</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>唔，头要裂开了，感觉要长脑子了😣</p>
+<span id="more"></span>
+<h4 id="Multi-Protocol-SPDZ"><a href="#Multi-Protocol-SPDZ" class="headerlink" title="Multi-Protocol SPDZ"></a><a target="_blank" rel="noopener" href="https://github.com/data61/MP-SPDZ">Multi-Protocol SPDZ</a></h4><h5 id="文档"><a href="#文档" class="headerlink" title="文档"></a><a target="_blank" rel="noopener" href="https://mp-spdz.readthedocs.io/en/latest/">文档</a></h5><h6 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h6><blockquote>
+<p>“TL;DR” $\leftrightarrow$”too long;didn’t read”</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install automake build-essential clang cmake git libboost-dev libboost-thread-dev libgmp-dev libntl-dev libsodium-dev libssl-dev libtool python3</span><br></pre></td></tr></table></figure>
+<ul>
+<li>build-essential 包即为arch里的base-devel<blockquote>
+<p><a target="_blank" rel="noopener" href="https://ubuntuforums.org/showthread.php?t=948419">https://ubuntuforums.org/showthread.php?t=948419</a></p>
+</blockquote>
+</li>
+<li>libboost-dev 等包，arch的命名与Debian系命名不同</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>libboost-dev</th>
+<th>libboost-thread-dev</th>
+<th>libgmp-dev</th>
+<th>libntl-dev</th>
+<th>libsodium-dev</th>
+<th>libssl-dev</th>
+<th>libtool</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>arch源中有boost,boost-libs</td>
+<td>同左侧，archlinux中boost包搞得很大，似乎是把什么都塞进去了</td>
+<td>同理，gmp</td>
+<td>ntl</td>
+<td>Network communication，cryptography and signaturing library, 简写为Nacl，发音salt，lmao 。在arch源中是libsodium,同时还有个php-sodium</td>
+<td>同理，包含在arch openssl库中</td>
+<td>GNU的工具，在arch源中也是libtool</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>顺嘴一提啊，markdown这个表格搞得很是梦靥，虽然最后渲染出来还行</p>
+</blockquote>
+<p><del>sudo pacman -S automake base-devel clang cmake git boost boost-libs gmp ntl libsodium openssl libtool python3</del></p>
+<p><del>git clone <a target="_blank" rel="noopener" href="https://github.com/data61/MP-SPDZ.git">https://github.com/data61/MP-SPDZ.git</a><br>make setup</del></p>
+<p><del>make -j8 mascot-party.x  #?</del></p>
+<p><del>echo 1 2 3 4 &gt; Player-Data&#x2F;Input-P0-0</del></p>
+<p><del>echo 1 2 3 4 &gt; Player-Data&#x2F;Input-P1-0</del></p>
+<p><del>Scripts&#x2F;compile-run.py -E mascot tutorial</del></p>
+<blockquote>
+<p>纯纯给自己找事，解压tar.xz包那个法顺畅无比</p>
+</blockquote>
+<h6 id="概况"><a href="#概况" class="headerlink" title="概况"></a>概况</h6><ul>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1e64y1C7Te/?share_source=copy_web&vd_source=793e6aa716fb17d6757bc85c7ca0a9aa">密码学学术讲座 | Mike Rosulek教授开讲安全多方计算</a><blockquote>
+<p>英文讲座，无字幕，实在看不下去</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/rdragos/awesome-mpc?tab=readme-ov-file">awesome mpc</a><blockquote>
+<p>github清单，给出了一些资料，其中有一本<a target="_blank" rel="noopener" href="https://securecomputation.org/">A Pragmatic Introduction to Secure Multi-Party Computation</a>中文版叫实用安全多方计算导论</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/351492646">安全多方计算学习路线</a><blockquote>
+<p>知乎一个叫六三的up，看着写了很多回答都是推荐自己的专栏。在他专栏底下有评论说实用安全多方计算导论写的并不是很好。他在专栏里也是建议先读Applications of Secure Multiparty Computation。</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/FudanMPL/Awesome-MPL">Multi-Party-Learning-Related-Papers</a><blockquote>
+<p>也是github仓库</p>
+</blockquote>
+</li>
+<li><a target="_blank" rel="noopener" href="https://eprint.iacr.org/2020/300.pdf">Secure Multiparty Computation (MPC)2020**-**Yehuda Lindell</a><blockquote>
+<p>六三的专栏里给出的一篇综述论文</p>
+</blockquote>
+</li>
+</ul>
+<h5 id="Lecture-1-安全多方计算（MPC）的基本概念及基础组件-——-冯登国院士"><a href="#Lecture-1-安全多方计算（MPC）的基本概念及基础组件-——-冯登国院士" class="headerlink" title="Lecture 1 安全多方计算（MPC）的基本概念及基础组件 —— 冯登国院士"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV16j411q7pf/">Lecture 1 安全多方计算（MPC）的基本概念及基础组件 —— 冯登国院士</a></h5><blockquote>
+<p>厦大国家天元数学东南中心的暑期短课程<a target="_blank" rel="noopener" href="https://tianyuan.xmu.edu.cn/cn/course/34.html">https://tianyuan.xmu.edu.cn/cn/course/34.html</a> 它课程概述里有这么段话：</p>
+</blockquote>
+<p>安全多方计算主要是针对无可信第三方的情况下，如何安全地计算一个约定函数的问题。也就是多个持有各自私有数据的参与方，在不泄露各自真实数据的情况下，共同执行一个计算逻辑，从而获得计算结果。它主要用到的技术是秘密共享、不经意传输、混淆电路、同态加密、零知识证明等关键技术。</p>
+<blockquote>
+<p>还得是人厦大，童哥去厦大能不能把我装箱子里带着。</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021359384.jpg"></p>
+<blockquote>
+<p>亿万富翁问题，两个富翁在没有第三方的情况下比较谁更富有</p>
+</blockquote>
+<p>安全多方计算能打破数据孤岛，实现数据流通，保护数据隐私。</p>
+<h5 id="安全多方计算分类"><a href="#安全多方计算分类" class="headerlink" title="安全多方计算分类"></a>安全多方计算分类</h5><p>敌手行为</p>
+<blockquote>
+<ul>
+<li>半诚实敌手（按照协议描述执行，但试图从协议记录中获取信息）</li>
+<li>恶意敌手（可以执行任何攻击，发送任意消息）</li>
+</ul>
+</blockquote>
+<p>腐化门限t</p>
+<blockquote>
+<p>n表示参与方的总数，t表示不诚实参与方数量的上界。</p>
+<ol>
+<li>t &lt; n&#x2F;2 ,诚实大多数</li>
+<li>不诚实大多数 , n&#x2F;2 &lt;&#x3D; t &lt; n</li>
+</ol>
+</blockquote>
+<p>输出可达性</p>
+<blockquote>
+<ol>
+<li>中止安全:腐化实体(被敌手控制)获得输出后,可以阻止诚实实体获得输出</li>
+<li>公平性:要么腐化实体和诚实实体均获得输出,要么他们均没有输出</li>
+<li>保证输出传送:所有诚实实体总是获得输出</li>
+</ol>
+<p>一般而言,不诚实大多数$\rightarrow$仅能达到中止安全;</p>
+<p>诚实大多数$\rightarrow$能达到公平性和保证输出传送<br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021424195.png"></p>
+</blockquote>
+<p>计算模型</p>
+<blockquote>
+<p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021425736.png"></p>
+</blockquote>
+<p>敌手计算能力</p>
+<blockquote>
+<p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021426644.png"><br>在不诚实大多数情况下,MPC协议设计不出来(?)</p>
+</blockquote>
+<p>腐化策略</p>
+<blockquote>
+<p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021428825.png"><br>考虑自适应腐化,就没法达到实际,高效了.</p>
+</blockquote>
+<p>网络模型</p>
+<blockquote>
+<p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021433516.png"></p>
+</blockquote>
+<h5 id="MPC基础组件"><a href="#MPC基础组件" class="headerlink" title="MPC基础组件"></a>MPC基础组件</h5><p>线性秘密分享</p>
+<blockquote>
+<p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021437160.png"><br>share算法将x分成n份;打开算法,每个参与方都运行重构算法,从而使每个参与方获得x<br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021445446.png"><br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021607856.png"><br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021610707.png"></p>
+</blockquote>
+<blockquote>
+<p>听不大明白,云里雾里</p>
+</blockquote>
+<h4 id="MOOC-第2讲-：「隐私计算基础理论」多方安全计算技术基础"><a href="#MOOC-第2讲-：「隐私计算基础理论」多方安全计算技术基础" class="headerlink" title="MOOC 第2讲 ：「隐私计算基础理论」多方安全计算技术基础"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1BG411M7qS">MOOC 第2讲 ：「隐私计算基础理论」多方安全计算技术基础</a></h4><p> <img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021616911.png"><br> <img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021618686.png"></p>
+<blockquote>
+<p>这里与上个视频所讲的一大不同就是:<br>敌手计算能力要求概率多项式时间,两种情况下都可以;</p>
+<p>要求无限计算能力时,仅能在诚实大多数情况下.</p>
+</blockquote>
+<p> <img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021624388.png"><br> <img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021624554.png"><br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021625539.png"></p>
+<h5 id="混淆电路方法"><a href="#混淆电路方法" class="headerlink" title="混淆电路方法"></a>混淆电路方法</h5><p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021628579.png"></p>
+<blockquote>
+<p>四种算法Garble,Encode,Eval,Decode</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021630992.png"></p>
+<blockquote>
+<p>κ音卡帕</p>
+</blockquote>
+<h6 id="不经意传输"><a href="#不经意传输" class="headerlink" title="不经意传输"></a>不经意传输</h6><p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021632399.png"></p>
+<blockquote>
+<p>ROT,Random 随机选的</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021634380.png"></p>
+<blockquote>
+<p>还是很懵懵的</p>
+</blockquote>
+<p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202401021639130.png"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/%E7%9F%A5%E8%AF%86-linux-%E6%AF%95%E4%B8%9A%E8%AE%BE%E8%AE%A1/" rel="tag"><i class="fa fa-tag"></i> 知识/linux/毕业设计</a>
+              <a href="/tags/%E7%9F%A5%E8%AF%86-%E5%AE%89%E5%85%A8%E5%A4%9A%E6%96%B9%E8%AE%A1%E7%AE%97/" rel="tag"><i class="fa fa-tag"></i> 知识/安全多方计算</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/Notes/%E6%94%BB%E5%87%BB%E2%80%9C%E5%A4%AA%E9%98%B3%E9%A3%8E%E2%80%9D%E5%85%AC%E5%8F%B8%E7%9A%84%E9%BB%91%E5%AE%A2%E6%98%AF%E5%A6%82%E4%BD%95%E9%95%BF%E6%97%B6%E9%97%B4%E4%B8%8D%E8%A2%AB%E5%8F%91%E7%8E%B0%E7%9A%84/" rel="prev" title="攻击“太阳风”公司的黑客是如何长时间不被发现的">
+      <i class="fa fa-chevron-left"></i> 攻击“太阳风”公司的黑客是如何长时间不被发现的
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/Notes/SDR/" rel="next" title="RTL-SDR开发">
+      RTL-SDR开发 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Multi-Protocol-SPDZ"><span class="nav-number">1.</span> <span class="nav-text">Multi-Protocol SPDZ</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%87%E6%A1%A3"><span class="nav-number">1.1.</span> <span class="nav-text">文档</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%A6%82%E5%86%B5"><span class="nav-number">1.1.2.</span> <span class="nav-text">概况</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Lecture-1-%E5%AE%89%E5%85%A8%E5%A4%9A%E6%96%B9%E8%AE%A1%E7%AE%97%EF%BC%88MPC%EF%BC%89%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8F%8A%E5%9F%BA%E7%A1%80%E7%BB%84%E4%BB%B6-%E2%80%94%E2%80%94-%E5%86%AF%E7%99%BB%E5%9B%BD%E9%99%A2%E5%A3%AB"><span class="nav-number">1.2.</span> <span class="nav-text">Lecture 1 安全多方计算（MPC）的基本概念及基础组件 —— 冯登国院士</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E5%A4%9A%E6%96%B9%E8%AE%A1%E7%AE%97%E5%88%86%E7%B1%BB"><span class="nav-number">1.3.</span> <span class="nav-text">安全多方计算分类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#MPC%E5%9F%BA%E7%A1%80%E7%BB%84%E4%BB%B6"><span class="nav-number">1.4.</span> <span class="nav-text">MPC基础组件</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#MOOC-%E7%AC%AC2%E8%AE%B2-%EF%BC%9A%E3%80%8C%E9%9A%90%E7%A7%81%E8%AE%A1%E7%AE%97%E5%9F%BA%E7%A1%80%E7%90%86%E8%AE%BA%E3%80%8D%E5%A4%9A%E6%96%B9%E5%AE%89%E5%85%A8%E8%AE%A1%E7%AE%97%E6%8A%80%E6%9C%AF%E5%9F%BA%E7%A1%80"><span class="nav-number">2.</span> <span class="nav-text">MOOC 第2讲 ：「隐私计算基础理论」多方安全计算技术基础</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B7%B7%E6%B7%86%E7%94%B5%E8%B7%AF%E6%96%B9%E6%B3%95"><span class="nav-number">2.1.</span> <span class="nav-text">混淆电路方法</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%B8%8D%E7%BB%8F%E6%84%8F%E4%BC%A0%E8%BE%93"><span class="nav-number">2.1.1.</span> <span class="nav-text">不经意传输</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">张一剑</p>
+  <div class="site-description" itemprop="description">Just for fun :D</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/91Quin" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;91Quin" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:YijianCS@outlook.com" title="E-Mail → mailto:YijianCS@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">鲁ICP备2021011592号-1 </a>
+      <img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403011809721.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=37020202001534" rel="noopener" target="_blank">鲁公网安备37020202001534号 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">张一剑</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var canonicalURL, curProtocol;
+      //Get the <link> tag
+      var x=document.getElementsByTagName("link");
+		//Find the last canonical URL
+		if(x.length > 0){
+			for (i=0;i<x.length;i++){
+				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
+					canonicalURL=x[i].href;
+				}
+			}
+		}
+    //Get protocol
+	    if (!canonicalURL){
+	    	curProtocol = window.location.protocol.split(':')[0];
+	    }
+	    else{
+	    	curProtocol = canonicalURL.split(':')[0];
+	    }
+      //Get current URL if the canonical URL does not exist
+	    if (!canonicalURL) canonicalURL = window.location.href;
+	    //Assign script content. Replace current URL with the canonical URL
+      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : 'default',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
+
+
+  
+
+  
+
+</body>
+</html>
