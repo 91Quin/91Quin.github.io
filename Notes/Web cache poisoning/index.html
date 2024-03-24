@@ -28,13 +28,18 @@
 <meta property="og:site_name" content="人生边上">
 <meta property="og:description" content="Web缓存投毒（？">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403231730215.png">
+<meta property="og:image" content="https://portswigger.net/web-security/images/param-miner.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403242300210.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403242302264.png">
 <meta property="article:published_time" content="2024-03-21T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-03-22T08:28:55.561Z">
+<meta property="article:modified_time" content="2024-03-24T15:22:39.902Z">
 <meta property="article:author" content="张一剑">
 <meta property="article:tag" content="知识&#x2F;cybersecurity">
 <meta property="article:tag" content="Web">
 <meta property="article:tag" content="web-cache-poisoning">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403231730215.png">
 
 <link rel="canonical" href="https://zhangyijian.cn/Notes/Web%20cache%20poisoning/">
 
@@ -176,10 +181,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-03-22 00:00:00 / 修改时间：16:28:55" itemprop="dateCreated datePublished" datetime="2024-03-22T00:00:00+08:00">2024-03-22</time>
+              <time title="创建时间：2024-03-22 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-22T00:00:00+08:00">2024-03-22</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-03-24 23:22:39" itemprop="dateModified" datetime="2024-03-24T23:22:39+08:00">2024-03-24</time>
+              </span>
 
           
 
@@ -216,7 +227,83 @@
 <blockquote>
 <p>woc，只能说，计组开始攻击我，但是不多只能说是</p>
 </blockquote>
-
+<p><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403231730215.png"><br> cache 作为用户与server之间的缓冲，它会保存针对特定request的response，通常是保存固定的一段时间。如果这段时间内，有另一个用户发送相同的request，cache就不往server发了，自己就发个response过去了。这样就减轻了server的负担。</p>
+<blockquote>
+<p>这让我有点联想到我当时配置腾讯云时好像设置了个参数，但我不确定是不是这个。Cloudflare是干这个的吗？还是说是代理加速？</p>
+</blockquote>
+<h4 id="Cache-keys"><a href="#Cache-keys" class="headerlink" title="Cache keys"></a>Cache keys</h4><p>cache收到request首先要判断是不是自己能处理，还是要发给server。cache判断的依据就是<code>cache key</code></p>
+<blockquote>
+<p>Caches identify equivalent requests by comparing a predefined subset of the request’s components, known collectively as the “cache key”.</p>
+</blockquote>
+<p>相应的不在<code>cache key</code>中的部分，就说是<code>unkeyed</code></p>
+<p>如果匹配上了，就认为是equivalent。就发response的副本。这是要注意到这些被忽略的部分，之后会进一步研究。</p>
+<h2 id="What-is-the-impact-of-a-web-cache-poisoning-attack"><a href="#What-is-the-impact-of-a-web-cache-poisoning-attack" class="headerlink" title="What is the impact of a web cache poisoning attack?"></a>What is the impact of a web cache poisoning attack?</h2><p>能造成什么样的损害，主要受俩因素影响：</p>
+<ul>
+<li><strong>What exactly the attacker can successfully get cached</strong><br>这里也是提到，web缓存投毒更多是作为一种分发（？）的方式&#x2F;途径，而不是一种单独的攻击。所以能造成怎么样的影响，是取决于injected payload的危害性。</li>
+<li><strong>The amount of traffic on the affected page</strong><br>介，很好理解。<blockquote>
+<p>by the way ，哥们在写这篇笔记时饱受新冠（疑似？折磨。这个vc泡起来喝，不知为何让我想到了育才后门的豆腐脑（可能是酸的很像蛙鱼？，思乡之情一时间盈满心头。</p>
+</blockquote>
+</li>
+</ul>
+<p>这里值得注意的一点是,cache的持续时间并不会影响Web cache poisoning造成的危害. 因为攻击者可以编写脚本, 无限地”再投毒”.</p>
+<h2 id="Constructing-a-web-cache-poisoning-attack"><a href="#Constructing-a-web-cache-poisoning-attack" class="headerlink" title="Constructing a web cache poisoning attack"></a>Constructing a web cache poisoning attack</h2><p>这里举出了通常地几个步骤:</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/web-cache-poisoning#identify-and-evaluate-unkeyed-inputs">Identify and evaluate unkeyed inputs</a></li>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/web-cache-poisoning#elicit-a-harmful-response-from-the-back-end-server"> Elicit a harmful response from the back-end server</a></li>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/web-cache-poisoning#get-the-response-cached">Get the response cached</a></li>
+</ol>
+<h3 id="Identify-and-evaluate-unkeyed-inputs"><a href="#Identify-and-evaluate-unkeyed-inputs" class="headerlink" title="Identify and evaluate unkeyed inputs"></a>Identify and evaluate unkeyed inputs</h3><blockquote>
+<p>Any web cache poisoning attack relies on manipulation of unkeyed inputs, such as headers.</p>
+</blockquote>
+<p>一想也是哦,就是利用<code>unkeyed</code>,我最初以为是通过修改<code>keyed</code>来实现攻击.仔细一想,修改了<code>cache key</code>,最后cache不就认为是request不一样了吗,不再方便投放response.</p>
+<blockquote>
+<p>Therefore, the first step when constructing a web cache poisoning attack is identifying unkeyed inputs that are supported by the server.</p>
+</blockquote>
+<p>可以通过手动地随机修改request来观察,是不是对response有影响.可以用Burp Comparer来比较response.</p>
+<h4 id="Param-Miner"><a href="#Param-Miner" class="headerlink" title="Param Miner"></a>Param Miner</h4><p>这里介绍了一个自动辨别<code>unkeyed inputs</code>的Burp的插件, <a target="_blank" rel="noopener" href="https://portswigger.net/bappstore/17d2949a985c4b7ca092728dba871943">Param Miner</a> .<br><img src="https://portswigger.net/web-security/images/param-miner.png"> 这个图就展示了 Param Miner 找到了一个<code>unkeyed header</code> <code>X-Forwarded-Host</code></p>
+<p>这里提到,在寻找<code>unkeyed inputs</code>时,也有可能导致<code>you generated responoses</code>被发送给真实用户.(我想可能说, 会让用户察觉之类的?) 所以要在你的request中使用unique cache key , 以此来确保不会暴露你生成的responses. 可以在request中添加一个<code>cache buster</code>(比方说独特的参数),来避免上述情况.</p>
+<h3 id="Elicit-a-harmful-response-from-the-back-end-server"><a href="#Elicit-a-harmful-response-from-the-back-end-server" class="headerlink" title="Elicit a harmful response from the back-end server"></a>Elicit a harmful response from the back-end server</h3><p>再上一个步骤之后,就是想办法生成harmful response. 尝试去利用输入来构建,比方说那些没有很好地被sanitized地输入,或者是用来生成其它数据的输入,都是可能的entry point</p>
+<h3 id="Get-the-response-cached"><a href="#Get-the-response-cached" class="headerlink" title="Get the response cached"></a>Get the response cached</h3><p>还需要让上一步构建的response进入缓存. 这里描述的比较概括,感觉没啥用.</p>
+<h2 id="Exploiting-web-cache-poisoning-vulnerabilities"><a href="#Exploiting-web-cache-poisoning-vulnerabilities" class="headerlink" title="Exploiting web cache poisoning vulnerabilities"></a><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/web-cache-poisoning/exploiting-implementation-flaws">Exploiting web cache poisoning</a> vulnerabilities</h2><p>这里介绍了两种不同的造成Web cache poisoning 漏洞的原因: </p>
+<ol>
+<li>cache设计上的漏洞</li>
+<li>cache实现上的漏洞</li>
+</ol>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/web-cache-poisoning/exploiting-design-flaws">Exploiting cache design flaws</a></li>
+<li><a target="_blank" rel="noopener" href="https://portswigger.net/web-security/web-cache-poisoning/exploiting-implementation-flaws">Exploiting cache implementation flaws</a></li>
+</ul>
+<h2 id="How-to-prevent-web-cache-poisoning-vulnerabilities"><a href="#How-to-prevent-web-cache-poisoning-vulnerabilities" class="headerlink" title="How to prevent web cache poisoning vulnerabilities"></a>How to prevent web cache poisoning vulnerabilities</h2><p>hhh,最好的防御方式就是不用cache.当然,他也说这个建议可能很无厘头,但是在一些情况下,比方说你使用CDN,而这个cache只是默认开启的,所以可以考虑下caching有没有这个必要.</p>
+<p>然后就是限制caching,只在”purely static responses”的情况下使用.</p>
+<p>这里也提到了一个更为普遍的情况:即现在大多数站点,无论是在开发过程中,还是在日常的操作中,都引入了第三方的技术.因此,无论你内部的安全情况怎么怎么好,只要引入了第三方的东西,很大程度上就依赖这些东西的开发者,也要有安全意识.安全是短板效应,所以在你引入第三方技术之前,最好是完全理解它在安全方面所带来的影响.</p>
+<p>当这个事情具体到Web cache poisoning时,并不是仅仅是是不是要用caching的问题,还是要考虑别的东西,比方说你用的CDN支持哪些<code>header</code>.<br>很多Web cache  poisoning漏洞发生,就是因为攻击者能够利用一些,不怎么知名的,request headers.很多情况下,这些header对于网站来说,压根用不到.同样的,如果说你用了一些,你并不完全理解,默认情况下支持这些unkeyed inputs的技术,就会存在漏洞.一种header用不到,那就没必要支持&#x2F;去处理.</p>
+<p>在实现caching时,也可以采用一些防范措施:</p>
+<ul>
+<li>如果是出于性能考虑, 打算排除一些cache key ,重写request</li>
+<li>不要接受<code>GET</code>requests.(???)因为一些第三方的技术可能会默认允许</li>
+<li>就算服务端漏洞看上去不能被利用, 也要打安全补丁.由于cache这个事,它也有可能被利用.</li>
+</ul>
+<h1 id="Exploiting-cache-design-flaws"><a href="#Exploiting-cache-design-flaws" class="headerlink" title="Exploiting cache design flaws"></a>Exploiting cache design flaws</h1><h2 id="Using-web-cache-poisoning-to-deliver-an-XSS-attack"><a href="#Using-web-cache-poisoning-to-deliver-an-XSS-attack" class="headerlink" title="Using web cache poisoning to deliver an XSS attack"></a>Using web cache poisoning to deliver an <a target="_blank" rel="noopener" href="https://portswigger.net/web-security/cross-site-scripting">XSS</a> attack</h2><p>最简单的一种web缓存投毒漏洞类型,unkeyed input没有被恰当地处理,最终反应在response中.</p>
+<p>request:</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/en?region=uk</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>innocent-website.com</span><br><span class="line"><span class="attribute">X-Forwarded-Host</span><span class="punctuation">: </span>innocent-website.co.uk</span><br><span class="line"></span><br><span class="line"><span class="language-apache"><span class="attribute">HTTP</span>/<span class="number">1</span>.<span class="number">1</span> <span class="number">200</span> OK</span></span><br><span class="line"><span class="language-apache"><span class="attribute">Cache</span>-Control: public</span></span><br><span class="line"><span class="language-apache"><span class="section">&lt;meta property=<span class="string">&quot;og:image&quot;</span> content=<span class="string">&quot;https://innocent-website.co.uk/cms/social.png&quot;</span> /&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p><code>X-Forwarded-Host</code>被用来动态地生成an Open Graph image URL(我不知道这是个啥) , 会反映在response中.通常这个header时unkeyed的.在这个例子中,它就能用来投毒.</p>
+<p>payload:</p>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/en?region=uk</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>innocent-website.com</span><br><span class="line"><span class="attribute">X-Forwarded-Host</span><span class="punctuation">: </span>a.&quot;&gt;&lt;script&gt;alert(1)&lt;/script&gt;&quot; //注意!</span><br><span class="line"></span><br><span class="line"><span class="language-apache"><span class="attribute">HTTP</span>/<span class="number">1</span>.<span class="number">1</span> <span class="number">200</span> OK</span></span><br><span class="line"><span class="language-apache"><span class="attribute">Cache</span>-Control: public</span></span><br><span class="line"><span class="language-apache"><span class="section">&lt;meta property=<span class="string">&quot;og:image&quot;</span> content=<span class="string">&quot;https://a.&quot;</span>&gt;</span><span class="section">&lt;script&gt;</span><span class="attribute">alert</span>(<span class="number">1</span>)&lt;/script&gt;<span class="string">&quot;/cms/social.png&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="Using-web-cache-poisoning-to-exploit-unsafe-handling-of-resource-imports"><a href="#Using-web-cache-poisoning-to-exploit-unsafe-handling-of-resource-imports" class="headerlink" title="Using web cache poisoning to exploit unsafe handling of resource imports"></a>Using web cache poisoning to exploit unsafe handling of resource imports</h2><blockquote>
+<p>Some websites use unkeyed headers to dynamically generate URLs for importing resources, such as externally hosted JavaScript files.</p>
+</blockquote>
+<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">GET</span> <span class="string">/</span> <span class="meta">HTTP/1.1</span></span><br><span class="line"><span class="attribute">Host</span><span class="punctuation">: </span>innocent-website.com</span><br><span class="line"><span class="attribute">X-Forwarded-Host</span><span class="punctuation">: </span>evil-user.net</span><br><span class="line"><span class="attribute">User-Agent</span><span class="punctuation">: </span>Mozilla/5.0 Firefox/57.0</span><br><span class="line"></span><br><span class="line"><span class="language-apache"><span class="attribute">HTTP</span>/<span class="number">1</span>.<span class="number">1</span> <span class="number">200</span> OK</span></span><br><span class="line"><span class="language-apache"><span class="section">&lt;script src=<span class="string">&quot;https://evil-user.net/static/analytics.js&quot;</span>&gt;</span><span class="section">&lt;/script&gt;</span></span></span><br></pre></td></tr></table></figure>
+<h4 id="Lab-Web-cache-poisoning-with-an-unkeyed-header"><a href="#Lab-Web-cache-poisoning-with-an-unkeyed-header" class="headerlink" title="Lab: Web cache poisoning with an unkeyed header"></a>Lab: <a target="_blank" rel="noopener" href="https://portswigger.net/web-security/web-cache-poisoning">Web cache poisoning</a> with an unkeyed header</h4><p>这里有个提示去用<code>X-Forwarded-Host</code>,woc,结果我这一看,GET request压根没这个header</p>
+<ol>
+<li>看了题解,是自己去加<code>X-Forwarded-Host</code>头,观察到response中相应地value被用来动态地生成一个”an absolute URL for importing a JavaScript file stored at <code>/resources/js/tracking.js</code>.”<br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403242300210.png"></li>
+<li>然后就是再发个request,观察到response中有个header<code>X-cache</code> , 说明它是从cache发回来的,这就使我们利用漏洞成为可能.<br><img src="https://raw.githubusercontent.com/91Quin/-for-hexo/main/img/202403242302264.png"></li>
+<li>然后这里solution说,来到exploit server中,修改file name来匹配这个response中的路径<code>/resources/js/tracking.js</code> , body中就填写payload<code>alert(document.cookie)</code></li>
+<li>然后就是发送request来投毒<figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">X-Forwarded-Host</span><span class="punctuation">: </span>YOUR-EXPLOIT-SERVER-ID.exploit-server.net</span><br></pre></td></tr></table></figure></li>
+<li>我之前做的时候并没有把<code>cache buster</code>当回事,现在一看还不行,有很大影响.</li>
+<li>不好意思我sb了,首先我放<code>X-Forwarded-Host</code>把整个url包含<code>https://</code>都放上了,不知怎么回事它就会用<code>referer</code>头(而且这个情况我之后无法复现) , 在修改了这个错误之后,我又发现我没有把url删除全,response中的path变成了<code>/resources/resources</code>,我是怎么发现的呢?我访问了以下,┑(￣Д ￣)┍</li>
+<li>修改了以上错误之后,lab就被正常solve了.</li>
+</ol>
+<h2 id="Using-web-cache-poisoning-to-exploit-cookie-handling-vulnerabilities"><a href="#Using-web-cache-poisoning-to-exploit-cookie-handling-vulnerabilities" class="headerlink" title="Using web cache poisoning to exploit cookie-handling vulnerabilities"></a>Using web cache poisoning to exploit cookie-handling vulnerabilities</h2>
     </div>
 
     
@@ -299,7 +386,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Web-cache-poisoning"><span class="nav-number">1.</span> <span class="nav-text">Web cache poisoning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-web-cache-poisoning"><span class="nav-number">1.1.</span> <span class="nav-text">What is web cache poisoning?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Web-cache-poisoning-research"><span class="nav-number">1.1.1.</span> <span class="nav-text">Web cache poisoning research</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-does-a-web-cache-work"><span class="nav-number">1.1.2.</span> <span class="nav-text">How does a web cache work?</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Web-cache-poisoning"><span class="nav-number">1.</span> <span class="nav-text">Web cache poisoning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-web-cache-poisoning"><span class="nav-number">1.1.</span> <span class="nav-text">What is web cache poisoning?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Web-cache-poisoning-research"><span class="nav-number">1.1.1.</span> <span class="nav-text">Web cache poisoning research</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#How-does-a-web-cache-work"><span class="nav-number">1.1.2.</span> <span class="nav-text">How does a web cache work?</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Cache-keys"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">Cache keys</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-is-the-impact-of-a-web-cache-poisoning-attack"><span class="nav-number">1.2.</span> <span class="nav-text">What is the impact of a web cache poisoning attack?</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Constructing-a-web-cache-poisoning-attack"><span class="nav-number">1.3.</span> <span class="nav-text">Constructing a web cache poisoning attack</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Identify-and-evaluate-unkeyed-inputs"><span class="nav-number">1.3.1.</span> <span class="nav-text">Identify and evaluate unkeyed inputs</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Param-Miner"><span class="nav-number">1.3.1.1.</span> <span class="nav-text">Param Miner</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Elicit-a-harmful-response-from-the-back-end-server"><span class="nav-number">1.3.2.</span> <span class="nav-text">Elicit a harmful response from the back-end server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Get-the-response-cached"><span class="nav-number">1.3.3.</span> <span class="nav-text">Get the response cached</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exploiting-web-cache-poisoning-vulnerabilities"><span class="nav-number">1.4.</span> <span class="nav-text">Exploiting web cache poisoning vulnerabilities</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-prevent-web-cache-poisoning-vulnerabilities"><span class="nav-number">1.5.</span> <span class="nav-text">How to prevent web cache poisoning vulnerabilities</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Exploiting-cache-design-flaws"><span class="nav-number">2.</span> <span class="nav-text">Exploiting cache design flaws</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-web-cache-poisoning-to-deliver-an-XSS-attack"><span class="nav-number">2.1.</span> <span class="nav-text">Using web cache poisoning to deliver an XSS attack</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-web-cache-poisoning-to-exploit-unsafe-handling-of-resource-imports"><span class="nav-number">2.2.</span> <span class="nav-text">Using web cache poisoning to exploit unsafe handling of resource imports</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Lab-Web-cache-poisoning-with-an-unkeyed-header"><span class="nav-number">2.2.0.1.</span> <span class="nav-text">Lab: Web cache poisoning with an unkeyed header</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-web-cache-poisoning-to-exploit-cookie-handling-vulnerabilities"><span class="nav-number">2.3.</span> <span class="nav-text">Using web cache poisoning to exploit cookie-handling vulnerabilities</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
